@@ -82,7 +82,12 @@ end
 
 // 4096 x 32 rom containing character definitions ($8000..$BFFF)
 
-(* ram_init_file = "hub_rom_low.hex" *)     reg [31:0] rom_low [4095:0];
+reg [31:0] rom_low [4095:0];
+
+initial
+begin
+    $readmemh("rom_8000_bfff_font.hex", rom_low);
+end
 
 reg [31:0] rom_low_q;
 
@@ -93,7 +98,12 @@ if (ena_bus && a[13:12] == 2'b10)
 
 // 4096 x 32 rom containing sin table, log table, booter, and interpreter ($C000..$FFFF)
 
-(* ram_init_file = "hub_rom_high.hex" *)    reg [31:0] rom_high [4095:0];
+reg [31:0] rom_high [4095:0];
+
+initial
+begin
+    $readmemh("rom_c000_ffff_scrambled.hex", rom_high);
+end
 
 reg [31:0] rom_high_q;
 
