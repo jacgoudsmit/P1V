@@ -58,8 +58,11 @@ The easiest way to make your changes available and to make it easy for yourself 
 Revision Notes
 --------------
 
+* 2015-11-21 - (Chip Gracey) Fixed out-of-order 'reg'/'wire" declarations that caused trouble with generic Verilog compilers.
 * 2015-07-31 - (Rick Post (MindRobots)) Added FPGA123-A7 target.
 * 2015-07-26 - (Jac Goudsmit) Added BeMicroCV-A9 target, updated documentation.
+* 2015-07-22 - (Jac Goudsmit) Fixed bug in PLL simulator ('&' in original source should be '|')
+* 2015-02-08 - (Seairth Jacobs) Added SDC files for DE0-Nano and DE2-115.
 * 2015-01-13 - (Jac Goudsmit) De-tabbed all source files, merged all sources into one directory to reduce maintenance effort, updated documentation.
 * 2014-08-11 - (Parallax) Fixed bug in reset for dira register (cog.v). Added support for the BeMicroCV board.
 * 2014-08-06 - (Parallax) First public release.
