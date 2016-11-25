@@ -327,6 +327,7 @@ wire [8:0] ram_a    = m[2]  ? px
                     : m[0]  ? i[sh:sl]
                             : i[dh:dl];
 wire [31:0] ram_q;
+wire [31:0] alu_r;
 
 
 cog_ram cog_ram_  ( .clk    (clk_cog),
@@ -394,6 +395,8 @@ assign pll_out      = plla;
 
 wire vidack;
 wire [31:0] vid_pin_out;
+reg [31:0] s;
+reg [31:0] d;
 
 cog_vid cog_vid_  ( .clk_cog    (clk_cog),
                     .clk_vid    (plla),
@@ -423,7 +426,6 @@ assign i            = run ? ix : {14'b000010_001_0_0001, p, 9'b000000000};
 // source
 
 reg [31:0] sy;
-reg [31:0] s;
 
 always @(posedge clk_cog)
 if (m[1])
@@ -444,8 +446,6 @@ if (m[2])
 
 
 // destination
-
-reg [31:0] d;
 
 always @(posedge clk_cog)
 if (m[2])
@@ -494,8 +494,6 @@ assign bus_d        = !bus_sel ? 32'b0  : d;
 
 
 // alu interface
-
-wire [31:0] alu_r;
 
 cog_alu cog_alu_  ( .i      (i[oh:ol]),
                     .s      (s),

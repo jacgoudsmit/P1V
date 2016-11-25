@@ -47,7 +47,7 @@ output      [31:0]  pin_out
 // configuration
 
 reg [31:0] vid;
-reg [31:0] scl;
+reg [19:0] scl;
 
 always @(posedge clk_cog or negedge ena)
 if (!ena)
@@ -57,7 +57,7 @@ else if (setvid)
 
 always @(posedge clk_cog)
 if (setscl)
-    scl <= data;
+    scl <= data[19:0];
 
 
 // video shifter

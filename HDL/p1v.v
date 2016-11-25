@@ -34,6 +34,10 @@ output      [31:0]  pin_dir,
 output       [7:0]  ledg                // cog leds
 );
 
+parameter           INVERT_COG_LEDS = 0;
+parameter           NUMCOGS = 8;
+
+
 //
 // reg and wire declarations
 //
@@ -60,7 +64,11 @@ tim clkgen( .clk        (clock_160),
 // Propeller 1 core module
 //
 
-dig core (  .nres       (nres),
+dig #(
+            .INVERT_COG_LEDS (INVERT_COG_LEDS),
+            .NUMCOGS    (NUMCOGS)
+) core (
+            .nres       (nres),
             .cfg        (cfg),
             .clk_cog    (clk_cog),
             .clk_pll    (clk_pll),

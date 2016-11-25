@@ -41,6 +41,7 @@ output       [7:0]  cog_led         // led outputs to show which cogs are active
 );
 
 parameter INVERT_COG_LEDS = 0;
+parameter NUMCOGS = 8;
 
 // cnt
 
@@ -81,13 +82,19 @@ wire [7:0]          bus_w;
 wire [7:0]  [1:0]   bus_s;
 wire [7:0] [15:0]   bus_a;
 wire [7:0] [31:0]   bus_d;
+wire [31:0]         bus_q;
+wire                bus_c;
+wire  [7:0]         bus_ack;
 wire [7:0]          pll;
 wire [7:0] [31:0]   outx;
 wire [7:0] [31:0]   dirx;
+wire  [7:0]         ptr_w;
+wire [27:0]         ptr_d;
+wire  [7:0]         cog_ena;
 
 genvar i;
 generate
-    for (i=0; i<8; i++)
+    for (i = 0; i < NUMCOGS; i++)
     begin : coggen
         cog cog_(   .nres       (nres),
                     .clk_cog    (clk_cog),
@@ -113,6 +120,16 @@ generate
                     .pin_out    (outx[i]),
                     .pin_dir    (dirx[i])   );
     end
+    
+    for (i = NUMCOGS; i < 8; i++)
+    begin : absentcogs
+        assign outx[i] = 0;
+        assign dirx[i] = 0;
+        assign bus_s[i] = 0;
+        assign bus_a[i] = 0;
+        assign bus_d[i] = 0;
+        assign pll[i] = 0;
+    end
 endgenerate
 
 
@@ -124,12 +141,6 @@ wire        hub_bus_w   = |bus_w;
 wire  [1:0] hub_bus_s   = bus_s[7] | bus_s[6] | bus_s[5] | bus_s[4] | bus_s[3] | bus_s[2] | bus_s[1] | bus_s[0];
 wire [15:0] hub_bus_a   = bus_a[7] | bus_a[6] | bus_a[5] | bus_a[4] | bus_a[3] | bus_a[2] | bus_a[1] | bus_a[0];
 wire [31:0] hub_bus_d   = bus_d[7] | bus_d[6] | bus_d[5] | bus_d[4] | bus_d[3] | bus_d[2] | bus_d[1] | bus_d[0];
-wire [31:0] bus_q;
-wire        bus_c;
-wire  [7:0] bus_ack;
-wire  [7:0] cog_ena;
-wire  [7:0] ptr_w;
-wire [27:0] ptr_d;
 
 hub hub_        (   .clk_cog    (clk_cog),
                     .ena_bus    (ena_bus),
