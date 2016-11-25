@@ -45,7 +45,7 @@ set_global_assignment -name DEVICE 5CEFA7F23C8
 set_global_assignment -name TOP_LEVEL_ENTITY fpga123
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "11.1 SP2"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:08:54  OCTOBER 05, 2012"
-set_global_assignment -name LAST_QUARTUS_VERSION 15.0.1
+set_global_assignment -name LAST_QUARTUS_VERSION "16.1.0 Lite Edition"
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD "2.5 V"
