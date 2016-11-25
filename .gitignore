@@ -1,3 +1,5 @@
+# Quartus II:
+
 PLLJ_PLLSPE_INFO.txt
 c5_pin_model_dump.txt
 
@@ -25,3 +27,8 @@ simulation/
 hc_output/
 output_files/
 
+# Vivado:
+
+*.cache/
+*.hw/
+*.runs/
