@@ -18,22 +18,29 @@ All files provided are Copyright 2014-2015 Parallax Inc. and distributed under t
 Supported FPGA Boards
 ---------------------
 
-The Propeller 1 Design files are structured to run on the following development boards:
+The Propeller 1 Design files are structured to run on the following development boards. The ones marked "Limited" have some hardware limitations that make it impossible to emulate the full Propeller. It may be possible that in the future, workarounds can be implemented; for example if there's not enough RAM, it may be possible to modify the implementation to use an external RAM chip.
+
+Altera-based targets:
 
 * [Terasic DE2-115](http://www.parallax.com/product/60050) (Altera Cyclone IV)
-* [Terasic DE0-Nano](http://www.parallax.com/product/60056) (Altera Cyclone IV)
+* [Terasic DE0-Nano](http://www.parallax.com/product/60056) (Altera Cyclone IV) *LIMITED*
 * [Arrow BeMicro CV](https://parts.arrow.com/item/detail/arrow-development-tools/bemicrocv) (Altera Cyclone V)
 * [Arrow BeMicro CV-A9](http://www.alterawiki.com/wiki/BeMicro_CV_A9) (Altera Cyclone V)
 * [Parallax 1-2-3 Board (A7)](http://forums.parallax.com/discussion/161545) (Altera Cyclone V)
 
-Other target systems will be added soon, including Xilinx FPGAs!
+Xilinx-based 
+* [Digilent Arty](https://reference.digilentinc.com/reference/programmable-logic/arty/start) (Xilinx Artix-7 35T) *LIMITED*
+
+Other target systems will be added in the future.
 
 Project Structure
 -----------------
 
 The HDL directory contains all the files you need to turn your supported FPGA board into a Propeller. All targets use the same files, but you have to follow different instructions depending on your hardware. Please go to the directory that's appropriate for your board and follow the instructions there. Note, the PDF files in some directories may be somewhat outdated because it's harder to edit PDF files than text files. The readme.txt files should be the most accurate.
 
-By default, the emulated P8X32A will behave exactly like a real Propeller chip with a 5MHz crystal connected to the XI pin. This allows normal 80MHz operation when PLL16X is used. You can program the 'chip' via any Propeller development software (like Propeller Tool, PropellerIDE, or SimpleIDE) by plugging a [Prop Plug](http://www.parallax.com/product/32201) onto the pins as described in the readme.txt for your board. On most FPGA boards, there is not enough EEPROM space available to use the "Download to EEPROM" option from the various Propeller tools, so you'll have to run your Propeller program from the internal RAM; instructions on how to modify FPGA boards to install a bigger EEPROM chip will be posted in the Wiki.
+By default, the emulated P8X32A will behave exactly like a real Propeller chip with a 5MHz crystal connected to the XI pin. This allows normal 80MHz operation when PLL16X is used. You can program the 'chip' via any Propeller development software (like Propeller Tool, PropellerIDE, or SimpleIDE) by plugging a [Prop Plug](http://www.parallax.com/product/32201) onto the pins as described in the readme.txt for your board.
+
+On most FPGA boards, there is no EEPROM available (or it's not big enough) so you can't use the "Download to EEPROM" option from the various Propeller tools, so you'll have to run your Propeller program from the internal RAM. The good news is that P1V gives you the opportunity to replace the boot loader with your own, so you can let your virtual Propeller boot from Flash ROM or an SD card adapter. Or you can make your application be part of the FPGA bit stream, and change the boot loader to jump straight into your program. All of this is not really documented, but if you need help, ask in the forums.
 
 The Spin directory contains the original source files for the code in the P8X32A's ROM. They were created with an early version of the development tools, so they might not compile correctly. For example, you will have to put a 'PUB anyname' at the top before compiling some of the files. They are not directly executable, but are provided to show you what went into the ROM:
 
@@ -58,7 +65,8 @@ The easiest way to make your changes available and to make it easy for yourself 
 Revision Notes
 --------------
 
-* 2015-11-21 - (Chip Gracey) Fixed out-of-order 'reg'/'wire" declarations that caused trouble with generic Verilog compilers.
+* 2016-11-24 - (Jac Goudsmit) Added support for the Digilent Arty (Xilinx Artix-7 35T)
+* 2016-11-21 - (Chip Gracey) Fixed out-of-order 'reg'/'wire" declarations that caused trouble with generic Verilog compilers.
 * 2015-07-31 - (Rick Post (MindRobots)) Added FPGA123-A7 target.
 * 2015-07-26 - (Jac Goudsmit) Added BeMicroCV-A9 target, updated documentation.
 * 2015-07-22 - (Jac Goudsmit) Fixed bug in PLL simulator ('&' in original source should be '|')
