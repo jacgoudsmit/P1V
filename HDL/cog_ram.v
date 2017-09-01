@@ -36,7 +36,7 @@ output reg  [31:0]  q
 
 // 512 x 32 ram
 
-reg [511:0] [31:0]  r;
+reg [31:0] r [511:0];
 
 always @(posedge clk)
 begin

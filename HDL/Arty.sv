@@ -225,7 +225,7 @@ PLLE2_BASE  #(
 
 
 p1v #(
-    .NUMCOGS (2)
+    .NUMCOGS (8)
 ) p1v_ (
     .clock_160 (clock_160),
     .inp_resn (~reset),
