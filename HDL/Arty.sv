@@ -36,10 +36,13 @@ input  wire   [0:0] btn,
 inout  wire   [7:0] ja,
 inout  wire   [7:0] jb,
 inout  wire   [7:0] jc,
-inout  wire   [7:0] jd//,
+inout  wire   [7:0] jd,
 
-//input  wire         uart_txd_in,
-//output wire         uart_rxd_out
+// FTDI chip is connected to these and emulates the Prop Plug
+// IMPORTANT: Jumper JP2 must be bridged, so that DTR on the serial port resets the Propeller
+input  wire         uart_txd_in,
+output wire         uart_rxd_out,
+input  wire         ck_rst
 
 );
 
@@ -50,9 +53,9 @@ inout  wire   [7:0] jd//,
 //
 
 
-wire reset;
+wire resn;
 
-assign reset = !btn[0];
+assign resn = btn[0] & ck_rst;
 
 
 //
@@ -78,7 +81,7 @@ assign led[3] = cogled[8];
 
 wire[31:0] pin_in = 
 {
-    jd[7],
+    uart_txd_in, //jd[7],
     jd[6],
     jd[5],
     jd[4],
@@ -126,8 +129,8 @@ wire[31:0] pin_dir;
 
 
 `define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
-assign jd[7] = `DIROUT(31);
-assign jd[6] = `DIROUT(30);
+assign uart_rxd_out /*jd[7]*/ = `DIROUT(31);
+//assign jd[6] = `DIROUT(30);
 assign jd[5] = `DIROUT(29);
 assign jd[4] = `DIROUT(28);
 assign jd[3] = `DIROUT(27);
@@ -228,7 +231,7 @@ p1v #(
     .NUMCOGS (8)
 ) p1v_ (
     .clock_160 (clock_160),
-    .inp_resn (~reset),
+    .inp_resn (resn),
     .ledg (cogled[8:1]),
     .pin_out (pin_out),
     .pin_in (pin_in),
