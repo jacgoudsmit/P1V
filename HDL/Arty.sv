@@ -31,6 +31,7 @@ output wire         led0_g,
 output wire         led1_g,
 output wire         led2_g,
 output wire         led3_g,
+output wire         led3_r,
 input  wire   [0:0] btn,
 
 inout  wire   [7:0] ja,
@@ -55,8 +56,9 @@ input  wire         ck_rst
 
 wire resn;
 
-assign resn = btn[0] & ck_rst;
+assign resn = ck_rst;
 
+assign led3_r = resn;
 
 //
 // LEDs
