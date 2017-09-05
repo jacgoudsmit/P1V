@@ -52,17 +52,16 @@ input  wire         ck_rst
 // LEDs
 //
 
-/*
+
 wire clock_160;
-reg[1:0] ledpwm;
+reg[2:0] ledpwm;
 always @(posedge clock_160)
 begin
   ledpwm = ledpwm + 1;
 end
-*/
 
 wire dim;
-assign dim = 1;//&{ledpwm};
+assign dim = &{ledpwm};
 
 wire[8:1] cogled;
 assign led0_g = cogled[1] & dim;
@@ -82,9 +81,9 @@ assign led[3] = cogled[8];
 
 wire resn;
 
-assign resn = ck_rst & dim;
+assign resn = ck_rst;
 
-assign led3_r = resn;
+assign led3_r = resn & dim;
 
 
 //
