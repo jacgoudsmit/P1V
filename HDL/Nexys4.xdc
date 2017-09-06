@@ -723,9 +723,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports rts]
 #set_property PACKAGE_PIN U13 [get_ports {MemAdr[22]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {MemAdr[22]}]
 
-#PLL
-#create_generated_clock -name clk_cog -source [get_pins PLL/CLKOUT0] -divide_by 2 [get_pins {divide_reg[12]/Q}]
-#MMCM
-create_generated_clock -name clk_cog -source [get_pins genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}]
-
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+
+

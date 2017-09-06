@@ -31,109 +31,12 @@ input  wire         reset
 
 
 //
-// LEDs
-//
-
-
-wire[8:1] cogled;
-assign ledg[0] = cogled[1];
-assign ledg[1] = cogled[2];
-assign ledg[2] = cogled[3];
-assign ledg[3] = cogled[4];
-assign ledg[4] = cogled[5];
-assign ledg[5] = cogled[6];
-assign ledg[6] = cogled[7];
-assign ledg[7] = cogled[8];
-
-
-//
-// Reset
-// AndrewSi 08302017: Added rts input from serial port and added to reset below.
-//
-
-
-wire clock_160;
-
-reg [24:0] reset_cnt;
-reg reset_to;
-
-// Emulate RC filter on Prop Plug by generating a long reset pulse
-// everytime rts goes high
-always @ (posedge clock_160 or negedge rts)
-    if (!rts) begin               //Hold in reset whenever rts is low
-        reset_cnt <= 25'h07a1200; //50ms delay value revised for 160Mhz clk.
-        reset_to <= 1'b0;
-    end else begin
-        reset_cnt <= reset_to ? reset_cnt : reset_cnt - 1;  // Count down to zero and wrap around.
-        reset_to <= (reset_cnt[24] == 1) ? 1'b1 : reset_to; // Reset pulse ends when MSB wraps back to 1.
-    end
-
-//Reset Propeller if RTS low, RTS counter is low (running), or CPU_RESET button is pushed (grounded).
-wire inp_res = !rts | !reset_to | !reset; 
-
-
-//
-// Inputs
-//
-
-
-wire[31:0] pin_in;
-assign pin_in[31:0] = pin[31:0];
-
-
-//
-// Outputs
-//
-
-
-wire[31:0] pin_out;
-wire[31:0] pin_dir;
-
-`define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
-
-assign pin[31] = `DIROUT(31);
-assign pin[30] = `DIROUT(30);
-assign pin[29] = `DIROUT(29);
-assign pin[28] = `DIROUT(28);
-assign pin[27] = `DIROUT(27);
-assign pin[26] = `DIROUT(26);
-assign pin[25] = `DIROUT(25);
-assign pin[24] = `DIROUT(24);
-
-assign pin[23] = `DIROUT(23);
-assign pin[22] = `DIROUT(22);
-assign pin[21] = `DIROUT(21);
-assign pin[20] = `DIROUT(20);
-assign pin[19] = `DIROUT(19);
-assign pin[18] = `DIROUT(18);
-assign pin[17] = `DIROUT(17);
-assign pin[16] = `DIROUT(16);
-
-assign pin[15] = `DIROUT(15);
-assign pin[14] = `DIROUT(14);
-assign pin[13] = `DIROUT(13);
-assign pin[12] = `DIROUT(12);
-assign pin[11] = `DIROUT(11);
-assign pin[10] = `DIROUT(10);
-assign pin[9]  = `DIROUT(9);
-assign pin[8]  = `DIROUT(8);
-
-assign pin[7]  = `DIROUT(7);
-assign pin[6]  = `DIROUT(6);
-assign pin[5]  = `DIROUT(5);
-assign pin[4]  = `DIROUT(4);
-assign pin[3]  = `DIROUT(3);
-assign pin[2]  = `DIROUT(2);
-assign pin[1]  = `DIROUT(1);
-assign pin[0]  = `DIROUT(0);
-
-
-//
 // Clock generator
 // This section is based on https://github.com/ZipCPU/openarty/blob/master/rtl/toplevel.v
 //
 
-wire CLKFBOUT;
+wire                clock_160;
+wire                CLKFBOUT;
 
 // DCM (100 MHz -> 160 MHz)
 MMCME2_BASE #(
@@ -196,6 +99,92 @@ genclock (
   // Feedback Clocks: 1-bit (each) input: Clock feedback ports
   .CLKFBIN(CLKFBOUT)            // 1-bit input: Feedback clock
 );
+
+
+//
+// LEDs
+//
+
+
+wire[8:1] cogled;
+assign ledg[0] = cogled[1];
+assign ledg[1] = cogled[2];
+assign ledg[2] = cogled[3];
+assign ledg[3] = cogled[4];
+assign ledg[4] = cogled[5];
+assign ledg[5] = cogled[6];
+assign ledg[6] = cogled[7];
+assign ledg[7] = cogled[8];
+
+
+//
+// Reset
+//
+
+
+wire                inp_res;
+
+reset reset_ (
+    .clock_160      (clock_160),
+    .async_res      (~rts & ~reset),
+    .res            (inp_res)
+);
+          
+
+//
+// Inputs
+//
+
+
+wire[31:0] pin_in;
+assign pin_in[31:0] = pin[31:0];
+
+
+//
+// Outputs
+//
+
+
+wire[31:0] pin_out;
+wire[31:0] pin_dir;
+
+`define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
+
+assign pin[31] = `DIROUT(31);
+assign pin[30] = `DIROUT(30);
+assign pin[29] = `DIROUT(29);
+assign pin[28] = `DIROUT(28);
+assign pin[27] = `DIROUT(27);
+assign pin[26] = `DIROUT(26);
+assign pin[25] = `DIROUT(25);
+assign pin[24] = `DIROUT(24);
+
+assign pin[23] = `DIROUT(23);
+assign pin[22] = `DIROUT(22);
+assign pin[21] = `DIROUT(21);
+assign pin[20] = `DIROUT(20);
+assign pin[19] = `DIROUT(19);
+assign pin[18] = `DIROUT(18);
+assign pin[17] = `DIROUT(17);
+assign pin[16] = `DIROUT(16);
+
+assign pin[15] = `DIROUT(15);
+assign pin[14] = `DIROUT(14);
+assign pin[13] = `DIROUT(13);
+assign pin[12] = `DIROUT(12);
+assign pin[11] = `DIROUT(11);
+assign pin[10] = `DIROUT(10);
+assign pin[9]  = `DIROUT(9);
+assign pin[8]  = `DIROUT(8);
+
+assign pin[7]  = `DIROUT(7);
+assign pin[6]  = `DIROUT(6);
+assign pin[5]  = `DIROUT(5);
+assign pin[4]  = `DIROUT(4);
+assign pin[3]  = `DIROUT(3);
+assign pin[2]  = `DIROUT(2);
+assign pin[1]  = `DIROUT(1);
+assign pin[0]  = `DIROUT(0);
 
 
 //

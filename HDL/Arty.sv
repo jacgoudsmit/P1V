@@ -20,6 +20,7 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
+
 module              arty
 (
 
@@ -49,11 +50,66 @@ input  wire         ck_rst
 
 
 //
-// LEDs
+// Clock generator
+// This section is based on https://github.com/ZipCPU/openarty/blob/master/rtl/toplevel.v
 //
 
 
 wire clock_160;
+
+wire    s_clk, sys_clk, mem_clk_nobuf, mem_clk_200mhz,
+    clk1_unused, clk2_unused, enet_clk, clk4_unnused,
+    clk5_unused, clk_feedback, clk_locked, mem_clk_200mhz_nobuf;
+PLLE2_BASE  #(
+    .BANDWIDTH("OPTIMIZED"),    // OPTIMIZED, HIGH, LOW
+    .CLKFBOUT_PHASE(0.0),       // Phase offset in degrees of CLKFB, (-360-360)
+    .CLKIN1_PERIOD(10.0),       // Input clock period in ns resolution
+    // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: divide amount for each CLKOUT(1-128)
+    .CLKFBOUT_MULT(8),          // Multiply value for all CLKOUT (2-64)
+    .CLKOUT0_DIVIDE(8),         // 100 MHz  (Clock for MIG)
+    .CLKOUT1_DIVIDE(4),         // 200 MHz  (MIG Reference clock)
+    .CLKOUT3_DIVIDE(32),        //  25 MHz  (Ethernet reference clk)
+    .CLKOUT4_DIVIDE(5),         //  160 MHz (Cog clock)
+    .CLKOUT5_DIVIDE(24),        //  66 MHz
+    // CLKOUT0_DUTY_CYCLE -- Duty cycle for each CLKOUT
+    .CLKOUT0_DUTY_CYCLE(0.5),
+    .CLKOUT1_DUTY_CYCLE(0.5),
+    .CLKOUT2_DUTY_CYCLE(0.5),
+    .CLKOUT3_DUTY_CYCLE(0.5),
+    .CLKOUT4_DUTY_CYCLE(0.5),
+    .CLKOUT5_DUTY_CYCLE(0.5),
+    // CLKOUT0_PHASE -- phase offset for each CLKOUT
+    .CLKOUT0_PHASE(0.0),
+    .CLKOUT1_PHASE(0.0),
+    .CLKOUT2_PHASE(0.0),
+    .CLKOUT3_PHASE(0.0),
+    .CLKOUT4_PHASE(0.0),
+    .CLKOUT5_PHASE(0.0),
+    .DIVCLK_DIVIDE(1),  // Master division value , (1-56)
+    .REF_JITTER1(0.0),  // Ref. input jitter in UI (0.000-0.999)
+    .STARTUP_WAIT("TRUE")   // Delay DONE until PLL Locks, ("TRUE"/"FALSE")
+) genclock(
+    // Clock outputs: 1-bit (each) output
+    .CLKOUT0(mem_clk_nobuf),
+    .CLKOUT1(mem_clk_200mhz_nobuf),
+    .CLKOUT2(clk2_unused),
+    .CLKOUT3(enet_clk),
+    .CLKOUT4(clock_160),
+    .CLKOUT5(clk5_unused),
+    .CLKFBOUT(clk_feedback), // 1-bit output, feedback clock
+    .LOCKED(clk_locked),
+    .CLKIN1(CLK100MHZ),
+    .PWRDWN(1'b0),
+    .RST(1'b0),
+    .CLKFBIN(clk_feedback)  // 1-bit input, feedback clock
+);
+
+
+//
+// LEDs
+//
+
+
 reg[2:0] ledpwm;
 always @(posedge clock_160)
 begin
@@ -79,11 +135,15 @@ assign led[3] = cogled[8];
 //
 
 
-wire resn;
+wire res;
 
-assign resn = ck_rst;
+reset reset_ (
+    .clock_160      (clock_160),
+    .async_res      (~ck_rst),
+    .res            (res)
+);
 
-assign led3_r = resn & dim;
+assign led3_r = res & dim;
 
 
 //
@@ -195,62 +255,6 @@ assign jd[7] = ftdi_propplug ? uart_txd_in : 1'bZ;
 
 
 //
-// Clock generator
-// This section is based on https://github.com/ZipCPU/openarty/blob/master/rtl/toplevel.v
-//
-
-
-wire clock_160;
-
-wire    s_clk, sys_clk, mem_clk_nobuf, mem_clk_200mhz,
-    clk1_unused, clk2_unused, enet_clk, clk4_unnused,
-    clk5_unused, clk_feedback, clk_locked, mem_clk_200mhz_nobuf;
-PLLE2_BASE  #(
-    .BANDWIDTH("OPTIMIZED"),    // OPTIMIZED, HIGH, LOW
-    .CLKFBOUT_PHASE(0.0),   // Phase offset in degrees of CLKFB, (-360-360)
-    .CLKIN1_PERIOD(10.0),   // Input clock period in ns resolution
-    // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: divide amount for each CLKOUT(1-128)
-    .CLKFBOUT_MULT(8),  // Multiply value for all CLKOUT (2-64)
-    .CLKOUT0_DIVIDE(8), // 100 MHz  (Clock for MIG)
-    .CLKOUT1_DIVIDE(4), // 200 MHz  (MIG Reference clock)
-    .CLKOUT3_DIVIDE(32),    //  25 MHz  (Ethernet reference clk)
-    .CLKOUT4_DIVIDE(5),     //  160 MHz (Cog clock)
-    .CLKOUT5_DIVIDE(24),    //  66 MHz
-    // CLKOUT0_DUTY_CYCLE -- Duty cycle for each CLKOUT
-    .CLKOUT0_DUTY_CYCLE(0.5),
-    .CLKOUT1_DUTY_CYCLE(0.5),
-    .CLKOUT2_DUTY_CYCLE(0.5),
-    .CLKOUT3_DUTY_CYCLE(0.5),
-    .CLKOUT4_DUTY_CYCLE(0.5),
-    .CLKOUT5_DUTY_CYCLE(0.5),
-    // CLKOUT0_PHASE -- phase offset for each CLKOUT
-    .CLKOUT0_PHASE(0.0),
-    .CLKOUT1_PHASE(0.0),
-    .CLKOUT2_PHASE(0.0),
-    .CLKOUT3_PHASE(0.0),
-    .CLKOUT4_PHASE(0.0),
-    .CLKOUT5_PHASE(0.0),
-    .DIVCLK_DIVIDE(1),  // Master division value , (1-56)
-    .REF_JITTER1(0.0),  // Ref. input jitter in UI (0.000-0.999)
-    .STARTUP_WAIT("TRUE")   // Delay DONE until PLL Locks, ("TRUE"/"FALSE")
-) genclock(
-    // Clock outputs: 1-bit (each) output
-    .CLKOUT0(mem_clk_nobuf),
-    .CLKOUT1(mem_clk_200mhz_nobuf),
-    .CLKOUT2(clk2_unused),
-    .CLKOUT3(enet_clk),
-    .CLKOUT4(clock_160),
-    .CLKOUT5(clk5_unused),
-    .CLKFBOUT(clk_feedback), // 1-bit output, feedback clock
-    .LOCKED(clk_locked),
-    .CLKIN1(CLK100MHZ),
-    .PWRDWN(1'b0),
-    .RST(1'b0),
-    .CLKFBIN(clk_feedback)  // 1-bit input, feedback clock
-);
-
-
-//
 // Virtual Propeller
 //
 
@@ -258,12 +262,12 @@ PLLE2_BASE  #(
 p1v #(
     .NUMCOGS (8)
 ) p1v_ (
-    .clock_160 (clock_160),
-    .inp_resn (resn),
-    .ledg (cogled[8:1]),
-    .pin_out (pin_out),
-    .pin_in (pin_in),
-    .pin_dir (pin_dir)
+    .clock_160      (clock_160),
+    .inp_resn       (~res),
+    .ledg           (cogled[8:1]),
+    .pin_out        (pin_out),
+    .pin_in         (pin_in),
+    .pin_dir        (pin_dir)
 );
 
 endmodule
