@@ -207,7 +207,7 @@ parameter sl        = 0;
 
 reg [27:0] ptr;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     ptr <= 28'b00000000000000_11111000000000;
 else if (ena_bus && ptr_w)
@@ -220,7 +220,7 @@ reg [4:0] m;
 
 wire waiti;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     m <= 5'b0;
 else
@@ -237,7 +237,7 @@ reg run;
 
 wire [8:0] px;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     run <= 1'b0;
 else if (m[3] && (&px))
@@ -256,19 +256,19 @@ wire jump_cancel;
 wire alu_co;
 wire alu_zo;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     p <= 1'b0;
 else if (m[3] && !(cond && jump_cancel))
     p <= px + 1'b1;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     c <= 1'b0;
 else if (m[3] && cond && i[wc])
     c <= alu_co;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     z <= 1'b0;
 else if (m[3] && cond && i[wz])
@@ -347,7 +347,7 @@ always @(posedge clk_cog)
 if (setouta)
     outa <= alu_r;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     dira <= 32'b0;
 else if (setdira)
@@ -476,7 +476,7 @@ assign jump_cancel  = jumpx[0];
 
 assign px           = cond && jump ? sx[8:0] : p;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     cancel <= 1'b0;
 else if (m[3])

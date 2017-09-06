@@ -56,7 +56,7 @@ if (nres)
 
 reg ena_bus;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     ena_bus <= 1'b0;
 else
@@ -67,7 +67,7 @@ else
 
 reg [7:0] bus_sel;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     bus_sel <= 8'b0;
 else if (ena_bus)
