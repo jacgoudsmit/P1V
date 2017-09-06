@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="20" Path="C:/Users/andrewsi/Documents/GitHub/P1V/HDL/P1V_Nexys4.xpr">
+<Project Version="7" Minor="20" Path="D:/GitHub/P1V/HDL/P1V_Nexys4.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="f8760ea7963a40758a3b8134323837df"/>
