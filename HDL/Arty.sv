@@ -20,8 +20,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-//`include "p1v.v"
-
 module              arty
 (
 
@@ -31,28 +29,23 @@ output wire         led0_g,
 output wire         led1_g,
 output wire         led2_g,
 output wire         led3_g,
+output wire         led2_r,
+output wire         led3_r,
 input  wire   [0:0] btn,
+input  wire   [0:0] sw,
 
 inout  wire   [7:0] ja,
 inout  wire   [7:0] jb,
 inout  wire   [7:0] jc,
-inout  wire   [7:0] jd//,
+inout  wire   [7:0] jd,
 
-//input  wire         uart_txd_in,
-//output wire         uart_rxd_out
+// FTDI chip is connected to these and emulates the Prop Plug
+// IMPORTANT: Jumper JP2 must be bridged if you use this feature
+input  wire         uart_txd_in,
+output wire         uart_rxd_out,
+input  wire         ck_rst
 
 );
-
-
-//
-// Reset
-// TODO: implement reset from serial port or Prop Plug
-//
-
-
-wire reset;
-
-assign reset = !btn[0];
 
 
 //
@@ -60,15 +53,37 @@ assign reset = !btn[0];
 //
 
 
+wire clock_160;
+reg[2:0] ledpwm;
+always @(posedge clock_160)
+begin
+  ledpwm = ledpwm + 1;
+end
+
+wire dim;
+assign dim = &{ledpwm};
+
 wire[8:1] cogled;
-assign led0_g = cogled[1];
-assign led1_g = cogled[2];
-assign led2_g = cogled[3];
-assign led3_g = cogled[4];
+assign led0_g = cogled[1] & dim;
+assign led1_g = cogled[2] & dim;
+assign led2_g = cogled[3] & dim;
+assign led3_g = cogled[4] & dim;
 assign led[0] = cogled[5];
 assign led[1] = cogled[6];
 assign led[2] = cogled[7];
 assign led[3] = cogled[8];
+
+
+//
+// Reset
+//
+
+
+wire resn;
+
+assign resn = ck_rst;
+
+assign led3_r = resn & dim;
 
 
 //
@@ -164,6 +179,22 @@ assign ja[0] = `DIROUT(0);
 
 
 //
+// Use the on-board FTDI chip as Prop plug, unless switch SW0 is on.
+// NOTE: JP2 must be bridged to allow resetting via DTR of the FTDI chip.
+//
+
+
+wire ftdi_propplug;
+
+assign ftdi_propplug = ~sw[0];
+
+assign led2_r = ftdi_propplug & dim;
+
+assign uart_rxd_out = ftdi_propplug ? jd[6] : 1'bZ;
+assign jd[7] = ftdi_propplug ? uart_txd_in : 1'bZ;    
+
+
+//
 // Clock generator
 // This section is based on https://github.com/ZipCPU/openarty/blob/master/rtl/toplevel.v
 //
@@ -171,7 +202,7 @@ assign ja[0] = `DIROUT(0);
 
 wire clock_160;
 
-wire    s_clk, sys_clk, mem_clk_200mhz,
+wire    s_clk, sys_clk, mem_clk_nobuf, mem_clk_200mhz,
     clk1_unused, clk2_unused, enet_clk, clk4_unnused,
     clk5_unused, clk_feedback, clk_locked, mem_clk_200mhz_nobuf;
 PLLE2_BASE  #(
@@ -225,10 +256,10 @@ PLLE2_BASE  #(
 
 
 p1v #(
-    .NUMCOGS (2)
+    .NUMCOGS (8)
 ) p1v_ (
     .clock_160 (clock_160),
-    .inp_resn (~reset),
+    .inp_resn (resn),
     .ledg (cogled[8:1]),
     .pin_out (pin_out),
     .pin_in (pin_in),
