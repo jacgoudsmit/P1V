@@ -49,7 +49,7 @@ output              pll
 reg [31:0] ctr;
 reg [31:0] frq;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     ctr <= 32'b0;
 else if (setctr)
