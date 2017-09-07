@@ -126,7 +126,7 @@ wire                inp_res;
 
 reset reset_ (
     .clock_160      (clock_160),
-    .async_res      (~rts & ~reset),
+    .async_res      (~rts | ~reset),
     .res            (inp_res)
 );
           
