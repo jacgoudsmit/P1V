@@ -31,6 +31,7 @@ Altera-based targets:
 Xilinx-based targets:
 
 * [Digilent Arty](https://reference.digilentinc.com/reference/programmable-logic/arty/start) (Xilinx Artix-7 35T)
+* [Digilent Nexys4](https://reference.digilentinc.com/reference/programmable-logic/nexys-4/start) (Xilinx Artix-7 100T)
 
 We welcome pull requests with support for new hardware!
 
@@ -66,9 +67,10 @@ The easiest way to make your changes available and to make it easy for yourself 
 Revision Notes
 --------------
 
+* 2017-09-06 - (Andy Silverman) Added support for Digilent Nexys4 (Artix -7 100T)
 * 2017-09-01 - (Andy Silverman) Contributed a small change in the declaration of cog memory, which makes the Xilinx Vivado tool use block RAM instead of LUTs as cog RAM. This change allows full support of 8 cogs on the Digilent Arty, with room to spare. Thanks Andy!
 * 2016-11-24 - (Jac Goudsmit) Added limited support for the Digilent Arty (Xilinx Artix-7 35T)
-* 2015-11-21 - (Chip Gracey) Fixed out-of-order 'reg'/'wire" declarations that caused trouble with generic Verilog compilers.
+* 2016-11-21 - (Chip Gracey) Fixed out-of-order 'reg'/'wire" declarations that caused trouble with generic Verilog compilers.
 * 2015-07-31 - (Rick Post (MindRobots)) Added FPGA123-A7 target.
 * 2015-07-26 - (Jac Goudsmit) Added BeMicroCV-A9 target, updated documentation.
 * 2015-07-22 - (Jac Goudsmit) Fixed bug in PLL simulator ('&' in original source should be '|')
