@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------------
-Top-level module for Digilent Arty (Xilinx Artix-7 FPGA)
+Top-level module for Digilent Nexys4 (Xilinx Artix-7 FPGA)
 
 This file is part of the hardware description for the Propeller 1 Design.
 
