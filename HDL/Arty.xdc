@@ -44,7 +44,7 @@ set_property -dict { PACKAGE_PIN T10   IOSTANDARD LVCMOS33 } [get_ports { led[3]
 
 ##Buttons
 
-set_property -dict { PACKAGE_PIN D9    IOSTANDARD LVCMOS33 } [get_ports { btn[0] }]; #IO_L6N_T0_VREF_16 Sch=btn[0]
+#set_property -dict { PACKAGE_PIN D9    IOSTANDARD LVCMOS33 } [get_ports { btn[0] }]; #IO_L6N_T0_VREF_16 Sch=btn[0]
 #set_property -dict { PACKAGE_PIN C9    IOSTANDARD LVCMOS33 } [get_ports { btn[1] }]; #IO_L11P_T1_SRCC_16 Sch=btn[1]
 #set_property -dict { PACKAGE_PIN B9    IOSTANDARD LVCMOS33 } [get_ports { btn[2] }]; #IO_L11N_T1_SRCC_16 Sch=btn[2]
 #set_property -dict { PACKAGE_PIN B8    IOSTANDARD LVCMOS33 } [get_ports { btn[3] }]; #IO_L12P_T1_MRCC_16 Sch=btn[3]
@@ -230,5 +230,96 @@ set_property -dict { PACKAGE_PIN C2    IOSTANDARD LVCMOS33 } [get_ports { ck_rst
 #set_property -dict { PACKAGE_PIN F13   IOSTANDARD LVCMOS33     } [get_ports { isns5v0_p }]; #IO_L5P_T0_AD9P_15 Sch=ad_p[9]
 #set_property -dict { PACKAGE_PIN A16   IOSTANDARD LVCMOS33     } [get_ports { isns0v95_n }]; #IO_L8N_T1_AD10N_15 Sch=ad_n[10]
 #set_property -dict { PACKAGE_PIN A15   IOSTANDARD LVCMOS33     } [get_ports { isns0v95_p }]; #IO_L8P_T1_AD10P_15 Sch=ad_p[10]
+
+## P1V specific timing constraints
+
+# Propeller clock
+create_generated_clock -name clk_cog -source [get_pins xilinx_clock_/genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}]
+
+# PLLs can run up to 128Mhz per spec. Each tap is logically exclusive from the others on the same PLL, and all PLL logic trees need to be treated as asynchronous from the rest of the design.
+create_clock -period 7.812 -name plla0_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla0_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla0_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla0_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla0_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla0_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla0_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla0_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll0_exclusive -logically_exclusive -group [get_clocks plla0_1] -group [get_clocks plla0_2] -group [get_clocks plla0_3] -group [get_clocks plla0_4] -group [get_clocks plla0_5] -group [get_clocks plla0_6] -group [get_clocks plla0_7] -group [get_clocks plla0_8]
+
+create_clock -period 7.812 -name plla1_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla1_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla1_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla1_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla1_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla1_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla1_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla1_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[1].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll1_exclusive -logically_exclusive -group [get_clocks plla1_1] -group [get_clocks plla1_2] -group [get_clocks plla1_3] -group [get_clocks plla1_4] -group [get_clocks plla1_5] -group [get_clocks plla1_6] -group [get_clocks plla1_7] -group [get_clocks plla1_8]
+
+create_clock -period 7.812 -name plla2_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla2_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla2_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla2_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla2_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla2_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla2_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla2_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[2].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll2_exclusive -logically_exclusive -group [get_clocks plla2_1] -group [get_clocks plla2_2] -group [get_clocks plla2_3] -group [get_clocks plla2_4] -group [get_clocks plla2_5] -group [get_clocks plla2_6] -group [get_clocks plla2_7] -group [get_clocks plla2_8]
+
+create_clock -period 7.812 -name plla3_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla3_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla3_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla3_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla3_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla3_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla3_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla3_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[3].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll3_exclusive -logically_exclusive -group [get_clocks plla3_1] -group [get_clocks plla3_2] -group [get_clocks plla3_3] -group [get_clocks plla3_4] -group [get_clocks plla3_5] -group [get_clocks plla3_6] -group [get_clocks plla3_7] -group [get_clocks plla3_8]
+
+create_clock -period 7.812 -name plla4_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla4_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla4_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla4_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla4_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla4_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla4_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla4_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[4].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll4_exclusive -logically_exclusive -group [get_clocks plla4_1] -group [get_clocks plla4_2] -group [get_clocks plla4_3] -group [get_clocks plla4_4] -group [get_clocks plla4_5] -group [get_clocks plla4_6] -group [get_clocks plla4_7] -group [get_clocks plla4_8]
+
+create_clock -period 7.812 -name plla5_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla5_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla5_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla5_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla5_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla5_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla5_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla5_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[5].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll5_exclusive -logically_exclusive -group [get_clocks plla5_1] -group [get_clocks plla5_2] -group [get_clocks plla5_3] -group [get_clocks plla5_4] -group [get_clocks plla5_5] -group [get_clocks plla5_6] -group [get_clocks plla5_7] -group [get_clocks plla5_8]
+
+create_clock -period 7.812 -name plla6_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla6_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla6_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla6_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla6_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla6_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla6_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla6_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[6].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll6_exclusive -logically_exclusive -group [get_clocks plla6_1] -group [get_clocks plla6_2] -group [get_clocks plla6_3] -group [get_clocks plla6_4] -group [get_clocks plla6_5] -group [get_clocks plla6_6] -group [get_clocks plla6_7] -group [get_clocks plla6_8]
+
+create_clock -period 7.812 -name plla7_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[35]/Q}]
+create_clock -period 7.812 -name plla7_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[34]/Q}]
+create_clock -period 7.812 -name plla7_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[33]/Q}]
+create_clock -period 7.812 -name plla7_4 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[32]/Q}]
+create_clock -period 7.812 -name plla7_5 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[31]/Q}]
+create_clock -period 7.812 -name plla7_6 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[30]/Q}]
+create_clock -period 7.812 -name plla7_7 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[29]/Q}]
+create_clock -period 7.812 -name plla7_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[28]/Q}]
+set_clock_groups -name pll7_exclusive -logically_exclusive -group [get_clocks plla7_1] -group [get_clocks plla7_2] -group [get_clocks plla7_3] -group [get_clocks plla7_4] -group [get_clocks plla7_5] -group [get_clocks plla7_6] -group [get_clocks plla7_7] -group [get_clocks plla7_8]
+
+# Make PLL trees asynchronous from cogs
+set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin clk_cog CLKFBOUT clock_160}] -group [get_clocks plla*]
+
+## Other Vivado settings
 
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]

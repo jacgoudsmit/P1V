@@ -32,7 +32,6 @@ output wire         led2_g,
 output wire         led3_g,
 output wire         led2_r,
 output wire         led3_r,
-input  wire   [0:0] btn,
 input  wire   [0:0] sw,
 
 inout  wire   [7:0] ja,
@@ -51,57 +50,18 @@ input  wire         ck_rst
 
 //
 // Clock generator
-// This section is based on https://github.com/ZipCPU/openarty/blob/master/rtl/toplevel.v
 //
 
 
-wire clock_160;
+wire                clock_160;
 
-wire    s_clk, sys_clk, mem_clk_nobuf, mem_clk_200mhz,
-    clk1_unused, clk2_unused, enet_clk, clk4_unnused,
-    clk5_unused, clk_feedback, clk_locked, mem_clk_200mhz_nobuf;
-PLLE2_BASE  #(
-    .BANDWIDTH("OPTIMIZED"),    // OPTIMIZED, HIGH, LOW
-    .CLKFBOUT_PHASE(0.0),       // Phase offset in degrees of CLKFB, (-360-360)
-    .CLKIN1_PERIOD(10.0),       // Input clock period in ns resolution
-    // CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: divide amount for each CLKOUT(1-128)
-    .CLKFBOUT_MULT(8),          // Multiply value for all CLKOUT (2-64)
-    .CLKOUT0_DIVIDE(8),         // 100 MHz  (Clock for MIG)
-    .CLKOUT1_DIVIDE(4),         // 200 MHz  (MIG Reference clock)
-    .CLKOUT3_DIVIDE(32),        //  25 MHz  (Ethernet reference clk)
-    .CLKOUT4_DIVIDE(5),         //  160 MHz (Cog clock)
-    .CLKOUT5_DIVIDE(24),        //  66 MHz
-    // CLKOUT0_DUTY_CYCLE -- Duty cycle for each CLKOUT
-    .CLKOUT0_DUTY_CYCLE(0.5),
-    .CLKOUT1_DUTY_CYCLE(0.5),
-    .CLKOUT2_DUTY_CYCLE(0.5),
-    .CLKOUT3_DUTY_CYCLE(0.5),
-    .CLKOUT4_DUTY_CYCLE(0.5),
-    .CLKOUT5_DUTY_CYCLE(0.5),
-    // CLKOUT0_PHASE -- phase offset for each CLKOUT
-    .CLKOUT0_PHASE(0.0),
-    .CLKOUT1_PHASE(0.0),
-    .CLKOUT2_PHASE(0.0),
-    .CLKOUT3_PHASE(0.0),
-    .CLKOUT4_PHASE(0.0),
-    .CLKOUT5_PHASE(0.0),
-    .DIVCLK_DIVIDE(1),  // Master division value , (1-56)
-    .REF_JITTER1(0.0),  // Ref. input jitter in UI (0.000-0.999)
-    .STARTUP_WAIT("TRUE")   // Delay DONE until PLL Locks, ("TRUE"/"FALSE")
-) genclock(
-    // Clock outputs: 1-bit (each) output
-    .CLKOUT0(mem_clk_nobuf),
-    .CLKOUT1(mem_clk_200mhz_nobuf),
-    .CLKOUT2(clk2_unused),
-    .CLKOUT3(enet_clk),
-    .CLKOUT4(clock_160),
-    .CLKOUT5(clk5_unused),
-    .CLKFBOUT(clk_feedback), // 1-bit output, feedback clock
-    .LOCKED(clk_locked),
-    .CLKIN1(CLK100MHZ),
-    .PWRDWN(1'b0),
-    .RST(1'b0),
-    .CLKFBIN(clk_feedback)  // 1-bit input, feedback clock
+xilinx_clock #(
+    .IN_PERIOD_NS   (10.0),
+    .CLK_MULTIPLY   (8),
+    .CLK_DIVIDE     (5)
+) xilinx_clock_ (
+    .clk_in         (CLK100MHZ),
+    .clock_160      (clock_160)
 );
 
 

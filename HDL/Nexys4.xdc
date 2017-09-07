@@ -723,9 +723,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports rts]
 #set_property PACKAGE_PIN U13 [get_ports {MemAdr[22]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {MemAdr[22]}]
 
-create_generated_clock -name clk_cog -source [get_pins genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}] 
+## P1V specific timing constraints
 
-#PLLs can run up to 128Mhz per spec. Each tap is logically exclusive from the others on the same PLL, and all PLL logic trees need to be treated as asynchronous from the rest of the design.
+# Propeller clock
+create_generated_clock -name clk_cog -source [get_pins xilinx_clock_/genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}]
+
+# PLLs can run up to 128Mhz per spec. Each tap is logically exclusive from the others on the same PLL, and all PLL logic trees need to be treated as asynchronous from the rest of the design.
 create_clock -period 7.812 -name plla0_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[35]/Q}]
 create_clock -period 7.812 -name plla0_2 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[34]/Q}]
 create_clock -period 7.812 -name plla0_3 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[33]/Q}]
@@ -806,10 +809,9 @@ create_clock -period 7.812 -name plla7_7 -waveform {0.000 3.906} [get_pins {p1v_
 create_clock -period 7.812 -name plla7_8 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[7].cog_/cog_ctra/pll_fake_reg[28]/Q}]
 set_clock_groups -name pll7_exclusive -logically_exclusive -group [get_clocks plla7_1] -group [get_clocks plla7_2] -group [get_clocks plla7_3] -group [get_clocks plla7_4] -group [get_clocks plla7_5] -group [get_clocks plla7_6] -group [get_clocks plla7_7] -group [get_clocks plla7_8]
 
-#Make PLL trees asynchronous from cogs
+# Make PLL trees asynchronous from cogs
 set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin clk_cog CLKFBOUT clock_160}] -group [get_clocks plla*]
 
+## Other Vivado settings
 
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
-
-
