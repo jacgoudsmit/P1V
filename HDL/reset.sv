@@ -25,20 +25,23 @@ module              reset
 input               clock_160,
 input               async_res,
 
-output              res
+output reg          res
 );
 
 parameter DELAY_CYCLES = 32'd8_000_000; // 50ms
 
 reg [31:0]          reset_cnt;
+wire                out_res;
 
-assign res = |reset_cnt;
+assign out_res = |reset_cnt;
 
+always @(posedge clock_160)
+    res <= out_res;
+    
 always @(posedge clock_160)
     if (async_res) begin
         reset_cnt <= DELAY_CYCLES;
-    end else if (res) begin
+    end else if (out_res) begin
         reset_cnt--;
     end
-
 endmodule
