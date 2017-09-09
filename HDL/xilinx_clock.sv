@@ -23,7 +23,8 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 module              xilinx_clock
 (
 input               clk_in,
-output              clock_160
+output              clock_160,
+output              clock_80
 );
 
 parameter  IN_PERIOD_NS = 10.0;
@@ -38,7 +39,7 @@ MMCME2_BASE #(
   .CLKFBOUT_PHASE(0.0),                 // Phase offset in degrees of CLKFB (-360.000-360.000).
   .CLKIN1_PERIOD(IN_PERIOD_NS),         // Input clock period in ns to ps resolution (i.e. 33.333 is 30 MHz).
   // CLKOUT0_DIVIDE - CLKOUT6_DIVIDE: Divide amount for each CLKOUT (1-128)
-  .CLKOUT1_DIVIDE(1),
+  .CLKOUT1_DIVIDE(10),
   .CLKOUT2_DIVIDE(1),
   .CLKOUT3_DIVIDE(1),
   .CLKOUT4_DIVIDE(1),
@@ -70,7 +71,7 @@ genclock (
   // Clock Outputs: 1-bit (each) output: User configurable clock outputs
   .CLKOUT0(clock_160),                  // 1-bit output: CLKOUT0
   .CLKOUT0B(),                          // 1-bit output: Inverted CLKOUT0
-  .CLKOUT1(),                           // 1-bit output: CLKOUT1
+  .CLKOUT1(clock_80),                   // 1-bit output: CLKOUT1
   .CLKOUT1B(),                          // 1-bit output: Inverted CLKOUT1
   .CLKOUT2(),                           // 1-bit output: CLKOUT2
   .CLKOUT2B(),                          // 1-bit output: Inverted CLKOUT2
