@@ -63,7 +63,7 @@ always @(posedge clk_cog)
 if (ena_bus)
     rc <= bus_r;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     ec <= 1'b0;
 else if (ena_bus)
@@ -120,7 +120,7 @@ always @(posedge clk_cog)
 if (ena_bus)
     rd <= !rc && ac[15];
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     ed <= 1'b0;
 else if (ena_bus)
@@ -202,7 +202,7 @@ wire [7:0] num_dcd  = 1'b1 << num;
 
 // cfg
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     cfg <= 8'b0;
 else if (ena_bus && sys && ac[2:0] == 3'b000)
@@ -213,13 +213,13 @@ else if (ena_bus && sys && ac[2:0] == 3'b000)
 
 wire cog_start      = sys && ac[2:0] == 3'b010 && !(dc[3] && all);
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     cog_e <= 8'b00000001;
 else if (ena_bus && sys && ac[2:1] == 2'b01)
     cog_e <= cog_e & ~num_dcd | {8{!ac[0]}} & num_dcd;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     cog_ena <= 8'b0;
 else if (ena_bus)
@@ -234,7 +234,7 @@ assign ptr_d        = dc[31:4];
 
 reg [7:0] lock_state;
 
-always @(posedge clk_cog or negedge nres)
+always @(posedge clk_cog)// or negedge nres)
 if (!nres)
     lock_e <= 8'b0;
 else if (ena_bus && sys && ac[2:1] == 2'b10)

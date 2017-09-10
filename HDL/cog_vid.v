@@ -49,7 +49,7 @@ output      [31:0]  pin_out
 reg [31:0] vid;
 reg [19:0] scl;
 
-always @(posedge clk_cog or negedge ena)
+always @(posedge clk_cog)// or negedge ena)
 if (!ena)
     vid <= 32'b0;
 else if (setvid)
@@ -104,7 +104,7 @@ if (new_set)
 reg cap;
 reg [1:0] snc;
 
-always @(posedge vclk or posedge snc[1])
+always @(posedge vclk)// or posedge snc[1])
 if (snc[1])
     cap <= 1'b0;
 else if (new_set)

@@ -1,8 +1,6 @@
-// cog_ram
-
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
+Simulated RC filter for reset
 
 This file is part of the hardware description for the Propeller 1 Design.
 
@@ -21,29 +19,29 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-module              cog_ram
+
+module              reset
 (
-input               clk,
-input               ena,
+input               clock_160,
+input               async_res,
 
-input               w,
-input        [8:0]  a,
-input       [31:0]  d,
-
-output reg  [31:0]  q
+output reg          res
 );
 
+parameter DELAY_CYCLES = 32'd8_000_000; // 50ms
 
-// 512 x 32 ram
+reg [31:0]          reset_cnt;
+wire                out_res;
 
-reg [31:0] r [511:0];
+assign out_res = |reset_cnt;
 
-always @(posedge clk)
-begin
-    if (ena && w)
-        r[a] <= d;
-    if (ena)
-        q <= r[a];
-end
-
+always @(posedge clock_160)
+    res <= out_res;
+    
+always @(posedge clock_160)
+    if (async_res) begin
+        reset_cnt <= DELAY_CYCLES;
+    end else if (out_res) begin
+        reset_cnt--;
+    end
 endmodule
