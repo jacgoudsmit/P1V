@@ -53,11 +53,11 @@ xilinx_clock #(
 
 wire[7:0] cogled;
 
-genvar l;
+genvar j;
 generate
-    for (l = 0; l < 8; l++)
+    for (j = 0; j < 8; j++)
     begin
-        assign ledg[l] = cogled[l];
+        assign ledg[j] = cogled[j];
     end
 endgenerate
     
