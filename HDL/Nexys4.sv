@@ -54,14 +54,15 @@ xilinx_clock #(
 //
 
 wire[7:0] cogled;
-genvar x;
-generate
-  for (x=0; x < 8; x=x+1)
-  begin: cog_led
-     assign ledg[x] = cogled[x];
-  end
-endgenerate   
 
+genvar l;
+generate
+    for (l = 0; l < 8; l++)
+    begin
+        assign ledg[l] = cogled[l];
+    end
+endgenerate
+    
 
 //
 // Reset
@@ -120,12 +121,12 @@ wire[31:0] pin_dir;
 
 genvar i;
 generate
-  for (i=0; i < 32; i=i+1)
-  begin: DIROUT
-     assign pin[i] = pin_dir[i] ? pin_out[i] : 1'bz;
-//     assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
-  end
-endgenerate   
+    for (i = 0; i < 32; i++)
+    begin
+        assign pin[i] = pin_dir[i] ? pin_out[i] : 1'bz;
+		//     assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
+    end
+endgenerate
 
 
 //
