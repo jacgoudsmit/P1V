@@ -92,8 +92,6 @@ assign pin_in[31:0] = pin[31:0];
 wire[31:0] pin_out;
 wire[31:0] pin_dir;
 
-`define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
-
 genvar i;
 generate
     for (i = 0; i < 32; i++)
