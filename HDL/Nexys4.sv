@@ -53,16 +53,14 @@ xilinx_clock #(
 // LEDs
 //
 
-
-wire[8:1] cogled;
-assign ledg[0] = cogled[1];
-assign ledg[1] = cogled[2];
-assign ledg[2] = cogled[3];
-assign ledg[3] = cogled[4];
-assign ledg[4] = cogled[5];
-assign ledg[5] = cogled[6];
-assign ledg[6] = cogled[7];
-assign ledg[7] = cogled[8];
+wire[7:0] cogled;
+genvar x;
+generate
+  for (x=0; x < 8; x=x+1)
+  begin: cog_led
+     assign ledg[x] = cogled[x];
+  end
+endgenerate   
 
 
 //
@@ -85,99 +83,49 @@ reset reset_ (
 
 
 wire[31:0] pin_in;
-wire[31:0] sync_out;
+//wire[31:0] sync_out;
 
 assign pin_in[31:0] = pin[31:0];
 
-// Asynchronous Input Synchronization - Adapted from Xilinx language template
-// Since all 32 bits of pin_in are asynchronous to any internal clocking source
-// in the Artix, in order to reduce the risk of metastability we run all input
-// pin paths through a synchronizer to bring everything into the clock_160 domain.
-//
-// The following synthesis and implementation attributes are added to the code
-// in order improve the MTBF characteristics of the implementation:
-//
-//  ASYNC_REG="TRUE" - Specifies registers will be receiving asynchronous data
-//                     input to allow tools to report and improve metastability
-//
-// The following parameters are available for customization:
-//
-//   SYNC_STAGES     - Integer value for number of synchronizing registers, must be 2 or higher
-//   PIPELINE_STAGES - Integer value for number of registers on the output of the
-//                     synchronizer for the purpose of improveing performance.
-//                     Particularly useful for high-fanout nets.
-//   INIT            - Initial value of synchronizer registers upon startup, 1'b0 or 1'b1.
+//// Asynchronous Input Synchronization - Adapted from Xilinx language template
+//// Since all 32 bits of pin_in are asynchronous to any internal clocking source
+//// in the Artix, in order to reduce the risk of metastability we run all input
+//// pin paths through a synchronizer to bring everything into the clock_80 domain safely.
 
-   parameter SYNC_STAGES = 2;
-   parameter PIPELINE_STAGES = 2;
-   parameter INIT = 32'b0;
-
-   (* ASYNC_REG="TRUE" *) reg [SYNC_STAGES-1:0][31:0] sreg = {SYNC_STAGES{INIT}};
-
-   always @(posedge clock_80)
-     sreg <= {sreg[SYNC_STAGES-2:0], pin_in[31:0]};
-
-   generate
-      if (PIPELINE_STAGES==0) begin: no_pipeline
-         assign sync_out = sreg[SYNC_STAGES-1][31:0];
-      end else if (PIPELINE_STAGES==1) begin: one_pipeline
-         reg [31:0] sreg_pipe = INIT;
-         always @(posedge clock_80)
-            sreg_pipe <= sreg[SYNC_STAGES-1][31:0];
-         assign sync_out = sreg_pipe;
-      end else begin: multiple_pipeline
-        (* shreg_extract = "no" *) reg [PIPELINE_STAGES-1:0][31:0] sreg_pipe = {PIPELINE_STAGES{INIT}};
-         always @(posedge clock_80)
-            sreg_pipe <= {sreg_pipe[PIPELINE_STAGES-2:0], sreg[SYNC_STAGES-1][31:0]};
-         assign sync_out = sreg_pipe[PIPELINE_STAGES-1][31:0];
-      end
-   endgenerate
+//inp_synchronizer #(
+//    .SYNC_STAGES     (2),
+//    .PIPELINE_STAGES (2),
+//    .INIT            (32'b0)
+//) in_sync_ (
+//    .clock_80       (clock_80),
+//    .pin_in         (pin_in),
+//    .sync_out       (sync_out)
+//);
 
 //
 // Outputs
 //
 
 
+//(* KEEP="true" *)
 wire[31:0] pin_out;
+//(* KEEP="true" *)
 wire[31:0] pin_dir;
+//(* KEEP="true" *)
+//wire[31:0] prop_input_bus;
 
-`define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
+// Based on direction register bits, send Prop outputs to output pins, or Hi-Z when direction is input.
+// When direction is output, the input bus should immediately mirror the data being output 
+// without passing through the synchronizers. Otherwise, use the result of the async input synchronizers.
 
-assign pin[31] = `DIROUT(31);
-assign pin[30] = `DIROUT(30);
-assign pin[29] = `DIROUT(29);
-assign pin[28] = `DIROUT(28);
-assign pin[27] = `DIROUT(27);
-assign pin[26] = `DIROUT(26);
-assign pin[25] = `DIROUT(25);
-assign pin[24] = `DIROUT(24);
-
-assign pin[23] = `DIROUT(23);
-assign pin[22] = `DIROUT(22);
-assign pin[21] = `DIROUT(21);
-assign pin[20] = `DIROUT(20);
-assign pin[19] = `DIROUT(19);
-assign pin[18] = `DIROUT(18);
-assign pin[17] = `DIROUT(17);
-assign pin[16] = `DIROUT(16);
-
-assign pin[15] = `DIROUT(15);
-assign pin[14] = `DIROUT(14);
-assign pin[13] = `DIROUT(13);
-assign pin[12] = `DIROUT(12);
-assign pin[11] = `DIROUT(11);
-assign pin[10] = `DIROUT(10);
-assign pin[9]  = `DIROUT(9);
-assign pin[8]  = `DIROUT(8);
-
-assign pin[7]  = `DIROUT(7);
-assign pin[6]  = `DIROUT(6);
-assign pin[5]  = `DIROUT(5);
-assign pin[4]  = `DIROUT(4);
-assign pin[3]  = `DIROUT(3);
-assign pin[2]  = `DIROUT(2);
-assign pin[1]  = `DIROUT(1);
-assign pin[0]  = `DIROUT(0);
+genvar i;
+generate
+  for (i=0; i < 32; i=i+1)
+  begin: DIROUT
+     assign pin[i] = pin_dir[i] ? pin_out[i] : 1'bz;
+//     assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
+  end
+endgenerate   
 
 
 //
@@ -190,9 +138,9 @@ p1v #(
 ) p1v_ (
     .clock_160      (clock_160),
     .inp_resn       (~inp_res),
-    .ledg           (cogled[8:1]),
+    .ledg           (cogled),
     .pin_out        (pin_out),
-    .pin_in         (sync_out),
+    .pin_in         (pin_in),
     .pin_dir        (pin_dir)
 );
 
