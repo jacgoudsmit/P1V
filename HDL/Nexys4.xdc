@@ -726,7 +726,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports rts]
 ## P1V specific timing constraints
 
 # Propeller clock
-create_generated_clock -name clk_cog -source [get_pins xilinx_clock_/genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}]
+# create_generated_clock -name clk_cog -source [get_pins xilinx_clock_/genclock/CLKOUT0] -divide_by 2 [get_pins {p1v_/clkgen/divide_reg[12]/Q}]
 
 # PLLs can run up to 128Mhz per spec. Each tap is logically exclusive from the others on the same PLL, and all PLL logic trees need to be treated as asynchronous from the rest of the design.
 create_clock -period 7.812 -name plla0_1 -waveform {0.000 3.906} [get_pins {p1v_/core/coggen[0].cog_/cog_ctra/pll_fake_reg[35]/Q}]
@@ -810,8 +810,19 @@ create_clock -period 7.812 -name plla7_8 -waveform {0.000 3.906} [get_pins {p1v_
 set_clock_groups -name pll7_exclusive -logically_exclusive -group [get_clocks plla7_1] -group [get_clocks plla7_2] -group [get_clocks plla7_3] -group [get_clocks plla7_4] -group [get_clocks plla7_5] -group [get_clocks plla7_6] -group [get_clocks plla7_7] -group [get_clocks plla7_8]
 
 # Make PLL trees asynchronous from cogs
-set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin clk_cog CLKFBOUT clock_160}] -group [get_clocks plla*]
-
+#set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin clk_cog CLKFBOUT clock_160}] -group [get_clocks plla*]
+set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin CLKFBOUT pllX* clock_80 clock_160}] -group [get_clocks plla*]
 ## Other Vivado settings
 
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+
+
+set_clock_groups -name clkpll_taps -logically_exclusive -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT5]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT4]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT3]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT2]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]]
+#create_clock -period 25.000 -name pllX8 -waveform {0.000 12.500} -add [get_pins xilinx_clock_/genclock/CLKOUT2]
+#create_clock -period 50.000 -name pllX4 -waveform {0.000 25.000} -add [get_pins xilinx_clock_/genclock/CLKOUT3]
+#create_clock -period 100.000 -name pllX2 -waveform {0.000 50.000} -add [get_pins xilinx_clock_/genclock/CLKOUT4]
+#create_clock -period 200.000 -name pllX1 -waveform {0.000 100.000} -add [get_pins xilinx_clock_/genclock/CLKOUT5]
+
+#create_pblock {pblock_cfgx_reg[5]}
+#add_cells_to_pblock [get_pblocks {pblock_cfgx_reg[5]}] [get_cells -quiet [list {p1v_/clkgen/cfgx_reg[5]}]]
+#resize_pblock [get_pblocks {pblock_cfgx_reg[5]}] -add {SLICE_X52Y93:SLICE_X55Y104}

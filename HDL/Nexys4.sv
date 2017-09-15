@@ -35,17 +35,20 @@ input  wire         reset
 //
 
 
-wire                clock_160;
-wire                clock_80;
+wire                clock_160, clock_80, pllX8, pllX4, pllX2, pllX1;
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
-    .CLK_MULTIPLY   (8),
-    .CLK_DIVIDE     (5)
+    .CLK_MULTIPLY   (64),
+    .CLK_DIVIDE     (4)
 ) xilinx_clock_ (
     .clk_in         (CLK100MHZ),
     .clock_160      (clock_160),
-    .clock_80       (clock_80)
+    .clock_80       (clock_80),
+    .pllX8          (pllX8),
+    .pllX4          (pllX4),
+    .pllX2          (pllX2),
+    .pllX1          (pllX1)    
 );
 
 
@@ -138,6 +141,11 @@ p1v #(
     .NUMCOGS        (8)
 ) p1v_ (
     .clock_160      (clock_160),
+    .clock_80       (clock_80),
+    .pllX8          (pllX8),
+    .pllX4          (pllX4),
+    .pllX2          (pllX2),
+    .pllX1          (pllX1),
     .inp_resn       (~inp_res),
     .ledg           (cogled),
     .pin_out        (pin_out),
