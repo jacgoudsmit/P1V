@@ -53,7 +53,7 @@ begin
          clksel == 5'b11110 && !res,                                                    // PLL8X
          clksel == 5'b11101 && !res,                                                    // PLL4X
         (clksel == 5'b11100 || clksel[2:0] == 3'b000) && !res,                          // PLL2X or RCFAST
-        (clksel == 5'b11011 || (clksel[4] == 1'b1 && clksel[2:0] == 3'b010)) && !res,   // PLL1X or XINPUT
+        (clksel == 5'b11011 || clksel == 5'b01010) && !res,                             // PLL1X or XINPUT
          1'b0,
          1'b0,
          1'b0,
