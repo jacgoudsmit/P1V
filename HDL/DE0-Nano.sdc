@@ -12,7 +12,7 @@ set_time_format -unit ns -decimal_places 3
 # Create Clock
 #**************************************************************
 
-create_clock -name clock_50 -period 20.000 [get_ports {clock_50}]
+create_clock -name CLOCK_50 -period 20.000 [get_ports {CLOCK_50}]
 
 # virtual clock for I/O (matches cog_clock)
 create_clock -name clock_io -period 12.500
@@ -115,8 +115,8 @@ derive_clock_uncertainty
 
 # The min/max delays are set to zero, so that TimeQuest doesn't
 # input port timing into account.
-set_input_delay -clock clock_io -min 0 [get_ports {inp_resn io*}]
-set_input_delay -clock clock_io -max 0 [get_ports {inp_resn io*}]
+set_input_delay -clock clock_io -min 0 [get_ports {GPIO0* GPIO1*}]
+set_input_delay -clock clock_io -max 0 [get_ports {GPIO0* GPIO1*}]
 
 #**************************************************************
 # Set Output Delay
@@ -124,15 +124,15 @@ set_input_delay -clock clock_io -max 0 [get_ports {inp_resn io*}]
 
 # The min/max delays are set to zero, so that TimeQuest doesn't
 # output port timing into account.
-set_output_delay -clock clock_io -min 0 [get_ports {ledg* io*}]
-set_output_delay -clock clock_io -max 0 [get_ports {ledg* io*}]
+set_output_delay -clock clock_io -min 0 [get_ports {LED* GPIO0* GPIO1*}]
+set_output_delay -clock clock_io -max 0 [get_ports {LED* GPIO0* GPIO1*}]
 
 #**************************************************************
 # Set Clock Groups
 #**************************************************************
 
 set_clock_groups -exclusive \
-    -group { clock_50 pll|auto_generated|pll1|clk[0] cog_clk}
+    -group { CLOCK_50 pll|auto_generated|pll1|clk[0] cog_clk}
     
 set_clock_groups -exclusive \
     -group {ctra0_pll0} \
