@@ -21,8 +21,8 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "cog.v"    // cog logic and memory (8 instances)
-`include "hub.v"    // hub logic and memory
+//`include "cog.v"    // cog logic and memory (8 instances)
+//`include "hub.v"    // hub logic and memory
 
 module              dig
 (
@@ -84,13 +84,13 @@ wire [7:0] [15:0]   bus_a;
 wire [7:0] [31:0]   bus_d;
 wire [31:0]         bus_q;
 wire                bus_c;
-wire  [7:0]         bus_ack;
+wire [7:0]          bus_ack;
 wire [7:0]          pll;
 wire [7:0] [31:0]   outx;
 wire [7:0] [31:0]   dirx;
-wire  [7:0]         ptr_w;
+wire [7:0 ]         ptr_w;
 wire [27:0]         ptr_d;
-wire  [7:0]         cog_ena;
+wire [7:0]          cog_ena;
 
 genvar i;
 generate

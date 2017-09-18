@@ -21,7 +21,7 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "hub_mem.v"
+//`include "hub_mem.v"
 
 module              hub
 (

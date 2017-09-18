@@ -24,7 +24,7 @@ module              xilinx_clock
 (
 input               clk_in,
 output              clock_160,
-output              clock_80,
+output              pllX16,
 output              pllX8,
 output              pllX4,
 output              pllX2,
@@ -37,13 +37,13 @@ parameter  CLK_DIVIDE   = 4;
 
 wire                CLKFBOUT;
 
-// Each successive tap is half the speed of the previous e.g.: 160, 80, 40, 20, 10, 5 MHz 
-parameter CLK_DIV_1 = CLK_DIVIDE << 1;
-parameter CLK_DIV_2 = CLK_DIV_1 << 1;
-parameter CLK_DIV_3 = CLK_DIV_2 << 1;
-parameter CLK_DIV_4 = CLK_DIV_3 << 1;
-parameter CLK_DIV_5 = CLK_DIV_4 << 1;
-//parameter CLK_DIV_6 = CLK_DIV_5 << 1; // Exceeds max of 128
+// Each successive tap is half the speed of the previous e.g.: 80, 40, 20, 10, 5 MHz 
+parameter CLK_DIV_1 = CLK_DIVIDE << 1;  // 80Mhz - PLLX16
+parameter CLK_DIV_2 = CLK_DIV_1 << 1;   // 40 - PLLX8
+parameter CLK_DIV_3 = CLK_DIV_2 << 1;   // 20 - PLLX4
+parameter CLK_DIV_4 = CLK_DIV_3 << 1;   // 10 - PLLX2 - Doubles as crystal-less "RCFAST" setting
+parameter CLK_DIV_5 = CLK_DIV_4 << 1;   //  5 - PLLX1
+
 
 MMCME2_BASE #(
   .BANDWIDTH("OPTIMIZED"),              // Jitter programming (OPTIMIZED, HIGH, LOW)
@@ -83,7 +83,7 @@ genclock (
   // Clock Outputs: 1-bit (each) output: User configurable clock outputs
   .CLKOUT0(clock_160),                  // 1-bit output: CLKOUT0
   .CLKOUT0B(),                          // 1-bit output: Inverted CLKOUT0
-  .CLKOUT1(clock_80),                   // 1-bit output: CLKOUT1
+  .CLKOUT1(pllX16),                     // 1-bit output: CLKOUT1
   .CLKOUT1B(),                          // 1-bit output: Inverted CLKOUT1
   .CLKOUT2(pllX8),                      // 1-bit output: CLKOUT2
   .CLKOUT2B(),                          // 1-bit output: Inverted CLKOUT2

@@ -19,14 +19,14 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "tim.v"
-`include "dig.v"
+//`include "tim.v"
+//`include "dig.v"
 
 module              p1v
 (
 input               clock_160,          // clock input
-input               clock_80,           // 1/2 clock for Cogs
-input               pllX8,
+input               pllX16,             // 1/2 clock for Cogs
+input               pllX8,              // ..etc..
 input               pllX4,
 input               pllX2,
 input               pllX1,
@@ -36,7 +36,7 @@ input       [31:0]  pin_in,
 output      [31:0]  pin_out,
 output      [31:0]  pin_dir,
 
-output       [7:0]  ledg                // cog leds
+output       [7:0]  ledg                // "cog active" leds
 );
 
 parameter           INVERT_COG_LEDS = 0;
@@ -59,7 +59,7 @@ wire                clk_cog;
 //
 
 tim clkgen( .clock_160  (clock_160),
-            .clock_80   (clock_80),
+            .pllX16     (pllX16),
             .pllX8      (pllX8),
             .pllX4      (pllX4),
             .pllX2      (pllX2),
@@ -85,7 +85,8 @@ dig #(
             .pin_in     (pin_in),
             .pin_out    (pin_out),
             .pin_dir    (pin_dir),
-            .cog_led    (ledg) );
+            .cog_led    (ledg)
+        );
 
 always @ (posedge clk_cog)
     nres <= inp_resn & !cfg[7];

@@ -106,7 +106,7 @@ if (new_set && enable) //ADDED
 reg cap;
 reg [1:0] snc;
 
-always @(posedge vclk or posedge snc[1])
+always @(posedge vclk)// or posedge snc[1])
 if (snc[1])
     cap <= 1'b0;
 else if (new_set && enable) //ADDED
