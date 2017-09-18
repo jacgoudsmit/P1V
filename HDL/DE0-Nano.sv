@@ -22,16 +22,12 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 `include "p1v.v"
 `include "altera.v"
 
-module              DE0-Nano
+module              DE0Nano
 (
 
 input               CLOCK_50,
 output        [7:0] LED,
-input         [3:0] SW,
 input         [1:0] KEY,
-
-inout               I2C_SCLK,           // EEPROM
-inout               I2C_SDAT,           // EEPROM
 
                                         // NOTICE: GPIO headers are mounted ANTI parallel
 inout        [33:0] GPIO0,              // Top header
@@ -41,12 +37,11 @@ inout        [33:0] GPIO1               // Bottom header
 
 
 //
-// Connect the Propeller pins to match the picture in the documentation
-// Also handle output pins
+// Mapt the Propeller pins to match the picture in the documentation
 //
 
 
-wire                res_pin;
+wire                pin_resn;
 wire         [31:0] pin_in;
 wire         [31:0] pin_out;
 wire         [31:0] pin_dir;
@@ -55,18 +50,18 @@ wire         [31:0] pin_dir;
 genvar i;
 generate
     for (i = 0; i < 30; i++)
-    begin : reverse_pin
+    begin : map_pin
         assign pin_in[i] = GPIO1[33 - i];
         assign GPIO1[33 - i] = pin_dir[i] ? pin_out[i] : 1'bz;
     end
 endgenerate
 
 // Prop plug attaches here
-assign res_pin      = GPIO0[25];
+assign pin_resn     = GPIO0[25];
 assign pin_in[31]   = GPIO0[27];
 assign pin_in[30]   = GPIO0[29];
 assign GPIO0[27] = pin_dir[31] ? pin_out[31] : 1'bZ;
-assign GPIO1[29] = pin_dir[30] ? pin_out[30] : 1'bZ;
+assign GPIO0[29] = pin_dir[30] ? pin_out[30] : 1'bZ;
 
 
 //
@@ -76,7 +71,7 @@ assign GPIO1[29] = pin_dir[30] ? pin_out[30] : 1'bZ;
 
 wire resn;
 
-assign resn = KEY[0] & res_pin;
+assign resn = KEY[0] & pin_resn;
 
 
 //
