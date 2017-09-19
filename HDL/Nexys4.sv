@@ -29,48 +29,10 @@ input  wire         rts,
 input  wire         reset
 );
 
+parameter           NUMCOGS = 8;
+parameter           INVERT_COG_LEDS = 0;
 
-//
-// Clock generator
-//
-
-
-wire    clock_160, pllX16, pllX8, pllX4, pllX2, pllX1;
-wire    pllX16_buf_i;
-
-xilinx_clock #(
-    .IN_PERIOD_NS   (10.0),
-    .CLK_MULTIPLY   (64),
-    .CLK_DIVIDE     (4)
-) xilinx_clock_ (
-    .clk_in         (CLK100MHZ),
-    .clock_160      (clock_160),
-    .pllX16         (pllX16_buf_i),
-    .pllX8          (pllX8),
-    .pllX4          (pllX4),
-    .pllX2          (pllX2),
-    .pllX1          (pllX1)    
-);
-
-   BUFG clock_80 (      // Directly instantiate a clock buffer for the 80Mhz clock, as it goes some places directly,
-   .O(pllX16),          // rather than through the clock selector logic (which puts it on a BUFGMUX chain)
-   .I(pllX16_buf_i)
-);
-
-//
-// LEDs
-//
-
-wire[7:0] cogled;
-
-genvar j;
-generate
-    for (j = 0; j < 8; j++)
-    begin
-        assign ledg[j] = cogled[j];
-    end
-endgenerate
-    
+wire                clock_160, clk_cog, clk_pll;
 
 //
 // Reset
@@ -85,6 +47,25 @@ reset reset_ (
     .res            (inp_res)
 );
           
+
+//
+// Clock generator
+//
+
+wire [7:0]          cfg;
+
+xilinx_clock #(
+    .IN_PERIOD_NS   (10.0),
+    .CLK_MULTIPLY   (64),
+    .CLK_DIVIDE     (4)
+) xilinx_clock_ (
+    .clk_in         (CLK100MHZ),
+    .cfg            (cfg[6:0]),
+    .res            (inp_res),
+    .clock_160      (clock_160),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll)   
+);
 
 //
 // Inputs
@@ -120,7 +101,20 @@ wire[31:0] pin_out;
 wire[31:0] pin_dir;
 //wire[31:0] prop_input_bus;
 
-// Based on direction register bits, send Prop outputs to output pins, or Hi-Z when direction is input.
+// Based on direction register 
+
+
+//p1v #(
+//    .NUMCOGS        (8)
+//) p1v_ (
+//    .clock_160      (clock_160),
+//    .pllX16         (pllX16),
+//    .pllX8          (pllX8),
+//    .pllX4          (pllX4),
+//    .pllX2          (pllX2),
+//    .pllX1          (pllX1),
+//    .inp_resn       (~inp_res),
+//    .ledg           (cogled),bits, send Prop outputs to output pins, or Hi-Z when direction is input.
 // When direction is output, the input bus should immediately mirror the data being output 
 // without passing through the synchronizers. Otherwise, use the result of the async input synchronizers.
 
@@ -133,27 +127,32 @@ generate
     end
 endgenerate
 
+//
+// reg and wire declarations
+//
+reg                 nres;
+reg         [23:0]  reset_cnt;
+reg                 reset_to;
 
 //
-// Virtual Propeller
+// Propeller 1 core module
 //
 
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
 
-p1v #(
-    .NUMCOGS        (8)
-) p1v_ (
-    .clock_160      (clock_160),
-    .pllX16         (pllX16),
-    .pllX8          (pllX8),
-    .pllX4          (pllX4),
-    .pllX2          (pllX2),
-    .pllX1          (pllX1),
-    .inp_resn       (~inp_res),
-    .ledg           (cogled),
-    .pin_out        (pin_out),
-    .pin_in         (pin_in),
-    .pin_dir        (pin_dir)
-);
-
+dig #(
+            .INVERT_COG_LEDS (INVERT_COG_LEDS),
+            .NUMCOGS    (NUMCOGS)
+) core (
+            .nres       (nres),
+            .cfg        (cfg),
+            .clk_cog    (clk_cog),
+            .clk_pll    (clk_pll),
+            .pin_in     (pin_in),
+            .pin_out    (pin_out),
+            .pin_dir    (pin_dir),
+            .cog_led    (ledg)
+        );
 
 endmodule

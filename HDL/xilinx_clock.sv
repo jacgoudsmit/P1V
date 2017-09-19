@@ -23,19 +23,22 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 module              xilinx_clock
 (
 input               clk_in,
+input [6:0]         cfg,
+input               res,
 output              clock_160,
-output              pllX16,
-output              pllX8,
-output              pllX4,
-output              pllX2,
-output              pllX1
+output              clk_cog,
+output              clk_pll
 );
+
+//
+//  First, instantiate the MMCM clock module primitive.
+//
 
 parameter  IN_PERIOD_NS = 10.0;
 parameter  CLK_MULTIPLY = 64;
 parameter  CLK_DIVIDE   = 4;
 
-wire                CLKFBOUT;
+wire                CLKFBOUT, pllX16, pllX8, pllX4, pllX2, pllX1;
 
 // Each successive tap is half the speed of the previous e.g.: 80, 40, 20, 10, 5 MHz 
 parameter CLK_DIV_1 = CLK_DIVIDE << 1;  // 80Mhz - PLLX16
@@ -105,6 +108,72 @@ genclock (
   // Feedback Clocks: 1-bit (each) input: Clock feedback ports
   .CLKFBIN(CLKFBOUT)                    // 1-bit input: Feedback clock
 );
+
+//
+//  Latch the config register inputs to determine the clock mode requested for output.
+//
+
+reg [6:0]   cfgx = 7'b0;
+reg [6:0]  divide = 6'b0;
+
+wire pllX8_or_4, pllX4_or_2, pllX2_or_1, pllX1_or_rcslow;
+
+wire[4:0] clksel = {cfgx[6:5], cfgx[2:0]};  // convenience, skipping the OSCM1 and OSCM0 signals
+
+always @ (posedge clock_160)
+begin
+    cfgx <= cfg;
+end
+
+//   BUFGMUX_CTRL BUFGMUX_CTRL_clkpll (
+//      .O(clk_pll),              // 1-bit output: PLL clock output
+//      .I0(cogclk_x2),           // 1-bit input: CogClk x 2 when clock mode is something other than PLLX16
+//      .I1(clock_160),           // 1-bit input: Use clock_160 when set to PLLx16 mode
+//      .S(clksel == 5'b11111)    // 1-bit input: (Is clock mode PLLx16?)
+//   );
+   assign clk_pll = clock_160;    // TODO: Find some way to select the right 2x clock for the fake PLL without overusing BUFGMUX_CTRL's
+      
+   BUFGMUX_CTRL BUFGMUX_CTRL_clkcog (
+      .O(clk_cog),
+      .I0(pllX8_or_4),
+      .I1(pllX16),
+      .S(clksel == 5'b11111)      // Select PLLX16 if true, otherwise lower
+   );
+   
+   BUFGMUX_CTRL BUFGMUX_CTRL_medpll (
+      .O(pllX8_or_4),
+      .I0(pllX4_or_2),
+      .I1(pllX8),
+      .S(clksel == 5'b11110) // Select PLLX8 when true, otherwise lower
+   ); 
+
+   BUFGMUX_CTRL BUFGMUX_CTRL_lowpll (
+      .O(pllX4_or_2),
+      .I0(pllX2_or_1),
+      .I1(pllX4),
+      .S(clksel == 5'b11101) // Select PLLX4 when true, otherwise lower
+   );
+   
+   BUFGMUX_CTRL BUFGMUX_CTRL_lastpll (
+      .O(pllX2_or_1),
+      .I0(pllX1_or_rcslow),
+      .I1(pllX2),
+      .S(clksel == 5'b11100 || clksel[2:0] == 3'b000) // Select PLLX2 when true, otherwise lower
+   );
+      
+   BUFGMUX_CTRL BUFGMUX_CTRL_rcslow (
+      .O(pllX1_or_rcslow),
+      .I0(divide[6]),
+      .I1(pllX1),
+      .S(clksel == 5'b11011 || clksel == 5'b01010) // Select PLLX1 or XINPUT when true, otherwise RCSLOW
+   );      
+
+// Generate a ~20Khz clock for RCSLOW mode from a counter. (Can't get the MMCM to run that slow).
+always @ (posedge pllX1)
+begin
+    divide <= divide + 
+    {res, 5'b00000, !res}; //7 bit counter at 5Mhz results in divide[6] toggling at ~19.5Khz for RCSLOW
+end
 
 
 endmodule
