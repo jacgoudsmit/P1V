@@ -77,21 +77,6 @@ wire[31:0] pin_in;
 
 assign pin_in[31:0] = pin[31:0];
 
-//// Asynchronous Input Synchronization - Adapted from Xilinx language template
-//// Since all 32 bits of pin_in are asynchronous to any internal clocking source
-//// in the Artix, in order to reduce the risk of metastability we run all input
-//// pin paths through a synchronizer to bring everything into the pllX16 domain safely.
-
-//inp_synchronizer #(
-//    .SYNC_STAGES     (2),
-//    .PIPELINE_STAGES (2),
-//    .INIT            (32'b0)
-//) in_sync_ (
-//    .pllX16       (pllX16),
-//    .pin_in         (pin_in),
-//    .sync_out       (sync_out)
-//);
-
 //
 // Outputs
 //
@@ -103,20 +88,6 @@ wire[31:0] pin_dir;
 
 // Based on direction register 
 
-
-//p1v #(
-//    .NUMCOGS        (8)
-//) p1v_ (
-//    .clock_160      (clock_160),
-//    .pllX16         (pllX16),
-//    .pllX8          (pllX8),
-//    .pllX4          (pllX4),
-//    .pllX2          (pllX2),
-//    .pllX1          (pllX1),
-//    .inp_resn       (~inp_res),
-//    .ledg           (cogled),bits, send Prop outputs to output pins, or Hi-Z when direction is input.
-// When direction is output, the input bus should immediately mirror the data being output 
-// without passing through the synchronizers. Otherwise, use the result of the async input synchronizers.
 
 genvar i;
 generate
