@@ -38,6 +38,8 @@ parameter  IN_PERIOD_NS = 10.0;
 parameter  CLK_MULTIPLY = 64;
 parameter  CLK_DIVIDE   = 4;
 
+wire                clock_160_o;
+wire                clk_pll_o;
 wire                CLKFBOUT;
 wire                pllX16;
 wire                pllX8;
@@ -51,6 +53,7 @@ parameter CLK_DIV_2 = CLK_DIV_1 << 1;   // 40 - PLLX8
 parameter CLK_DIV_3 = CLK_DIV_2 << 1;   // 20 - PLLX4
 parameter CLK_DIV_4 = CLK_DIV_3 << 1;   // 10 - PLLX2 - Doubles as crystal-less "RCFAST" setting
 parameter CLK_DIV_5 = CLK_DIV_4 << 1;   //  5 - PLLX1
+parameter CLK_DIV_6 = CLK_DIVIDE + (CLK_DIVIDE >> 2); //CLK_PLL (Simulated) - 128Mhz
 
 
 MMCME2_BASE #(
@@ -65,7 +68,7 @@ MMCME2_BASE #(
   .CLKOUT3_DIVIDE(CLK_DIV_3),
   .CLKOUT4_DIVIDE(CLK_DIV_4),
   .CLKOUT5_DIVIDE(CLK_DIV_5),
-  .CLKOUT6_DIVIDE(1),
+  .CLKOUT6_DIVIDE(CLK_DIV_6),
   // CLKOUT0_DUTY_CYCLE - CLKOUT6_DUTY_CYCLE: Duty cycle for each CLKOUT (0.01-0.99).
   .CLKOUT0_DUTY_CYCLE(0.5),
   .CLKOUT1_DUTY_CYCLE(0.5),
@@ -77,7 +80,6 @@ MMCME2_BASE #(
   // CLKOUT0_PHASE - CLKOUT6_PHASE: Phase offset for each CLKOUT (-360.000-360.000).
   .CLKOUT0_PHASE(0.0),
   .CLKOUT1_PHASE(0.0),
-  .CLKOUT2_PHASE(0.0),
   .CLKOUT3_PHASE(0.0),
   .CLKOUT4_PHASE(0.0),
   .CLKOUT5_PHASE(0.0),
@@ -89,7 +91,7 @@ MMCME2_BASE #(
 )
 genclock (
   // Clock Outputs: 1-bit (each) output: User configurable clock outputs
-  .CLKOUT0(clock_160),                  // 1-bit output: CLKOUT0
+  .CLKOUT0(clock_160_o),                  // 1-bit output: CLKOUT0
   .CLKOUT0B(),                          // 1-bit output: Inverted CLKOUT0
   .CLKOUT1(pllX16),                     // 1-bit output: CLKOUT1
   .CLKOUT1B(),                          // 1-bit output: Inverted CLKOUT1
@@ -99,7 +101,7 @@ genclock (
   .CLKOUT3B(),                          // 1-bit output: Inverted CLKOUT3
   .CLKOUT4(pllX2),                      // 1-bit output: CLKOUT4
   .CLKOUT5(pllX1),                      // 1-bit output: CLKOUT5
-  .CLKOUT6(),                           // 1-bit output: CLKOUT6
+  .CLKOUT6(clk_pll_o),                  // 1-bit output: CLKOUT6
   // Feedback Clocks: 1-bit (each) output: Clock feedback ports
   .CLKFBOUT(CLKFBOUT),                  // 1-bit output: Feedback clock
   .CLKFBOUTB(),                         // 1-bit output: Inverted CLKFBOUT
@@ -128,53 +130,60 @@ wire                pllX1_or_rcslow;
 
 wire[4:0] clksel = {cfgx[6:5], cfgx[2:0]};  // convenience, skipping the OSCM1 and OSCM0 signals
 
-always @ (posedge clock_160)
+always @ (posedge pllX16)
 begin
     cfgx <= cfg;
 end
 
-//   BUFGMUX_CTRL BUFGMUX_CTRL_clkpll (
-//      .O(clk_pll),              // 1-bit output: PLL clock output
-//      .I0(cogclk_x2),           // 1-bit input: CogClk x 2 when clock mode is something other than PLLX16
-//      .I1(clock_160),           // 1-bit input: Use clock_160 when set to PLLx16 mode
-//      .S(clksel == 5'b11111)    // 1-bit input: (Is clock mode PLLx16?)
-//   );
-   assign clk_pll = clock_160;    // TODO: Find some way to select the right 2x clock for the fake PLL without overusing BUFGMUX_CTRL's
-      
-   BUFGMUX_CTRL BUFGMUX_CTRL_clkcog (
+// The 160Mhz clock needs to go on a clock buffer.
+BUFG BUFG_160 (
+    .O(clock_160),
+    .I(clock_160_o)
+);
+
+// As does the Cog-PLLs clock.
+BUFG BUFG_pll (
+    .O(clk_pll),
+    .I(clk_pll_o)
+);
+
+//
+//  The next section creates a chain of 2-to-1 clock MUXes such that only the clock selected by the cog clock config register is output to them.
+//      
+BUFGMUX_CTRL BUFGMUX_CTRL_clkcog (
       .O(clk_cog),
       .I0(pllX8_or_4),
       .I1(pllX16),
-      .S(clksel == 5'b11111)      // Select PLLX16 if true, otherwise lower
-   );
+      .S(clksel == 5'b11111)        // Select PLLX16 if true, otherwise lower
+);
    
-   BUFGMUX_CTRL BUFGMUX_CTRL_medpll (
+BUFGMUX_CTRL BUFGMUX_CTRL_medpll (
       .O(pllX8_or_4),
       .I0(pllX4_or_2),
       .I1(pllX8),
-      .S(clksel == 5'b11110) // Select PLLX8 when true, otherwise lower
-   ); 
+      .S(clksel == 5'b11110)        // Select PLLX8 when true, otherwise lower
+); 
 
-   BUFGMUX_CTRL BUFGMUX_CTRL_lowpll (
+BUFGMUX_CTRL BUFGMUX_CTRL_lowpll (
       .O(pllX4_or_2),
       .I0(pllX2_or_1),
       .I1(pllX4),
-      .S(clksel == 5'b11101) // Select PLLX4 when true, otherwise lower
-   );
+      .S(clksel == 5'b11101)        // Select PLLX4 when true, otherwise lower
+);
    
-   BUFGMUX_CTRL BUFGMUX_CTRL_lastpll (
+BUFGMUX_CTRL BUFGMUX_CTRL_lastpll (
       .O(pllX2_or_1),
       .I0(pllX1_or_rcslow),
       .I1(pllX2),
-      .S(clksel == 5'b11100 || clksel[2:0] == 3'b000) // Select PLLX2 when true, otherwise lower
-   );
+      .S(clksel == 5'b11100 || clksel[2:0] == 3'b000)   // Select PLLX2 when true, otherwise lower
+);
       
-   BUFGMUX_CTRL BUFGMUX_CTRL_rcslow (
+BUFGMUX_CTRL BUFGMUX_CTRL_rcslow (
       .O(pllX1_or_rcslow),
       .I0(divide[6]),
       .I1(pllX1),
-      .S(clksel == 5'b11011 || clksel == 5'b01010) // Select PLLX1 or XINPUT when true, otherwise RCSLOW
-   );      
+      .S(clksel == 5'b11011 || clksel == 5'b01010)      // Select PLLX1 or XINPUT when true, otherwise RCSLOW
+);      
 
 // Generate a ~20Khz clock for RCSLOW mode from a counter. (Can't get the MMCM to run that slow).
 always @ (posedge pllX1)
