@@ -44,8 +44,8 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pin[8]}]
 set_property PACKAGE_PIN V2 [get_ports {pin[9]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pin[9]}]
 #Bank = 34, Pin name = IO_L9P_T1_DQS_34,                    Sch name = SW10
-set_property PACKAGE_PIN U2 [get_ports {pin[10]}]
-set_property IOSTANDARD LVCMOS33 [get_ports {pin[10]}]
+#set_property PACKAGE_PIN U2 [get_ports {pin[10]}]
+#set_property IOSTANDARD LVCMOS33 [get_ports {pin[10]}]
 #Bank = 34, Pin name = IO_L11N_T1_MRCC_34,                  Sch name = SW11
 set_property PACKAGE_PIN T3 [get_ports {pin[11]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pin[11]}]
@@ -478,11 +478,11 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pin[16]}]
 
 ##PWM Audio Amplifier
 ##Bank = 15, Pin name = IO_L4N_T0_15,                       Sch name = AUD_PWM
-#set_property PACKAGE_PIN A11 [get_ports ampPWM]
-#set_property IOSTANDARD LVCMOS33 [get_ports ampPWM]
+set_property PACKAGE_PIN A11 [get_ports {pin[10]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {pin[10]}]
 ##Bank = 15, Pin name = IO_L6P_T0_15,                       Sch name = AUD_SD
-#set_property PACKAGE_PIN D12 [get_ports ampSD]
-#set_property IOSTANDARD LVCMOS33 [get_ports ampSD]
+set_property PACKAGE_PIN D12 [get_ports ampSD]
+set_property IOSTANDARD LVCMOS33 [get_ports ampSD]
 
 
 ##USB-RS232 Interface
@@ -927,7 +927,7 @@ set_clock_groups -asynchronous -group [get_clocks vclk*] -group [get_clocks {pll
 # near its block RAMs, put the individual cog rams as close to the relevant cog as possible, etc.
 create_pblock {pblock_coggen[7].cog_}
 add_cells_to_pblock [get_pblocks {pblock_coggen[7].cog_}] [get_cells -quiet [list {core/coggen[7].cog_}]]
-resize_pblock [get_pblocks {pblock_coggen[7].cog_}] -add {SLICE_X52Y64:SLICE_X63Y99}
+resize_pblock [get_pblocks {pblock_coggen[7].cog_}] -add {SLICE_X52Y62:SLICE_X63Y99}
 resize_pblock [get_pblocks {pblock_coggen[7].cog_}] -add {RAMB18_X1Y26:RAMB18_X1Y39}
 create_pblock {pblock_coggen[3].cog_}
 add_cells_to_pblock [get_pblocks {pblock_coggen[3].cog_}] [get_cells -quiet [list {core/coggen[3].cog_}]]
@@ -939,10 +939,10 @@ resize_pblock [get_pblocks {pblock_coggen[0].cog_}] -add {SLICE_X74Y75:SLICE_X89
 resize_pblock [get_pblocks {pblock_coggen[0].cog_}] -add {RAMB18_X3Y30:RAMB18_X3Y39}
 create_pblock {pblock_coggen[5].cog_}
 add_cells_to_pblock [get_pblocks {pblock_coggen[5].cog_}] [get_cells -quiet [list {core/coggen[5].cog_}]]
-resize_pblock [get_pblocks {pblock_coggen[5].cog_}] -add {SLICE_X50Y74:SLICE_X51Y99 SLICE_X38Y74:SLICE_X49Y104}
+resize_pblock [get_pblocks {pblock_coggen[5].cog_}] -add {SLICE_X38Y70:SLICE_X51Y99}
 create_pblock {pblock_coggen[6].cog_}
 add_cells_to_pblock [get_pblocks {pblock_coggen[6].cog_}] [get_cells -quiet [list {core/coggen[6].cog_}]]
-resize_pblock [get_pblocks {pblock_coggen[6].cog_}] -add {SLICE_X52Y50:SLICE_X57Y63 SLICE_X38Y50:SLICE_X51Y73}
+resize_pblock [get_pblocks {pblock_coggen[6].cog_}] -add {SLICE_X38Y102:SLICE_X51Y130}
 create_pblock {pblock_coggen[1].cog_}
 add_cells_to_pblock [get_pblocks {pblock_coggen[1].cog_}] [get_cells -quiet [list {core/coggen[1].cog_}]]
 resize_pblock [get_pblocks {pblock_coggen[1].cog_}] -add {SLICE_X78Y100:SLICE_X89Y117 SLICE_X68Y105:SLICE_X77Y124}
@@ -966,6 +966,7 @@ resize_pblock [get_pblocks pblock_clkgen] -add {SLICE_X50Y100:SLICE_X53Y101}
 
 ## Other Vivado settings
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+
 
 
 
