@@ -26,7 +26,8 @@ input  wire         CLK100MHZ,
 output wire   [7:0] ledg,
 inout  wire  [31:0] pin,
 input  wire         rts,
-input  wire         reset
+input  wire         reset,
+output wire         ampSD
 );
 
 parameter           NUMCOGS = 8;
@@ -97,6 +98,10 @@ generate
 		//     assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
     end
 endgenerate
+
+//Turn on audio amplifier power when PWM output on Pin 10 is set to output direction
+assign              ampSD = pin_dir[10];
+
 
 //
 // reg and wire declarations
