@@ -22,8 +22,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "p1v.v"
-`include "altera.v"
 
 module              fpga123
 (
