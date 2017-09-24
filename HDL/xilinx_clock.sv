@@ -38,7 +38,12 @@ parameter  IN_PERIOD_NS = 10.0;
 parameter  CLK_MULTIPLY = 64;
 parameter  CLK_DIVIDE   = 4;
 
-wire                CLKFBOUT, pllX16, pllX8, pllX4, pllX2, pllX1;
+wire                CLKFBOUT;
+wire                pllX16;
+wire                pllX8;
+wire                pllX4;
+wire                pllX2;
+wire                pllX1;
 
 // Each successive tap is half the speed of the previous e.g.: 80, 40, 20, 10, 5 MHz 
 parameter CLK_DIV_1 = CLK_DIVIDE << 1;  // 80Mhz - PLLX16
@@ -116,7 +121,10 @@ genclock (
 reg [6:0]   cfgx = 7'b0;
 reg [6:0]  divide = 6'b0;
 
-wire pllX8_or_4, pllX4_or_2, pllX2_or_1, pllX1_or_rcslow;
+wire                pllX8_or_4;
+wire                pllX4_or_2;
+wire                pllX2_or_1;
+wire                pllX1_or_rcslow;
 
 wire[4:0] clksel = {cfgx[6:5], cfgx[2:0]};  // convenience, skipping the OSCM1 and OSCM0 signals
 
