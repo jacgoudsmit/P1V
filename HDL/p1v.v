@@ -23,11 +23,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 module              p1v
 (
 input               clock_160,          // clock input
-input               pllX16,             // 1/2 clock for Cogs
-input               pllX8,              // ..etc..
-input               pllX4,
-input               pllX2,
-input               pllX1,
 input               inp_resn,           // reset input (active low)
 
 input       [31:0]  pin_in,
@@ -56,12 +51,7 @@ wire                clk_cog;
 // Clock control
 //
 
-tim clkgen( .clock_160  (clock_160),
-            .pllX16     (pllX16),
-            .pllX8      (pllX8),
-            .pllX4      (pllX4),
-            .pllX2      (pllX2),
-            .pllX1      (pllX1),
+tim clkgen( .clk        (clock_160),
             .res        (~inp_resn),
             .cfg        (cfg[6:0]),
             .clk_pll    (clk_pll),
