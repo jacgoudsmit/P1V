@@ -1,25 +1,25 @@
 # -------------------------------------------------------------------------- #
 #
-# Copyright (C) 1991-2015 Altera Corporation. All rights reserved.
-# Your use of Altera Corporation's design tools, logic functions 
+# Copyright (C) 2017  Intel Corporation. All rights reserved.
+# Your use of Intel Corporation's design tools, logic functions 
 # and other software and tools, and its AMPP partner logic 
 # functions, and any output files from any of the foregoing 
 # (including device programming or simulation files), and any 
 # associated documentation or information are expressly subject 
-# to the terms and conditions of the Altera Program License 
-# Subscription Agreement, the Altera Quartus II License Agreement,
-# the Altera MegaCore Function License Agreement, or other 
+# to the terms and conditions of the Intel Program License 
+# Subscription Agreement, the Intel Quartus Prime License Agreement,
+# the Intel MegaCore Function License Agreement, or other 
 # applicable license agreement, including, without limitation, 
 # that your use is for the sole purpose of programming logic 
-# devices manufactured by Altera and sold by Altera or its 
+# devices manufactured by Intel and sold by Intel or its 
 # authorized distributors.  Please refer to the applicable 
 # agreement for further details.
 #
 # -------------------------------------------------------------------------- #
 #
-# Quartus II 64-Bit
-# Version 15.0.1 Build 150 06/03/2015 SJ Web Edition
-# Date created = 01:00:38  July 26, 2015
+# Quartus Prime
+# Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
+# Date created = 23:06:43  September 23, 2017
 #
 # -------------------------------------------------------------------------- #
 #
@@ -31,7 +31,7 @@
 #		assignment_defaults.qdf
 #
 # 2) Altera recommends that you do not modify this file. This
-#    file is updated automatically by the Quartus II software
+#    file is updated automatically by the Quartus Prime software
 #    and any changes you make may be lost or overwritten.
 #
 # -------------------------------------------------------------------------- #
@@ -42,9 +42,20 @@
 # ========================
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION "11.1 SP2"
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:08:54  OCTOBER 05, 2012"
-set_global_assignment -name LAST_QUARTUS_VERSION "16.1.0 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "17.0.2 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name SMART_RECOMPILE ON
+set_global_assignment -name VERILOG_FILE top.v
+set_global_assignment -name VERILOG_FILE tim.v
+set_global_assignment -name VERILOG_FILE hub_mem.v
+set_global_assignment -name VERILOG_FILE hub.v
+set_global_assignment -name VERILOG_FILE dig.v
+set_global_assignment -name VERILOG_FILE cog_vid.v
+set_global_assignment -name VERILOG_FILE cog_ram.v
+set_global_assignment -name VERILOG_FILE cog_ctr.v
+set_global_assignment -name VERILOG_FILE cog_alu.v
+set_global_assignment -name VERILOG_FILE cog.v
+set_global_assignment -name VERILOG_FILE altera.v
 
 # Pin & Location Assignments
 # ==========================
@@ -100,13 +111,13 @@ set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
 # Analysis & Synthesis Assignments
 # ================================
 set_global_assignment -name FAMILY "Cyclone V"
-set_global_assignment -name TOP_LEVEL_ENTITY top
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
 set_global_assignment -name CYCLONEII_OPTIMIZATION_TECHNIQUE BALANCED
 set_global_assignment -name SYNTH_TIMING_DRIVEN_SYNTHESIS ON
 set_global_assignment -name SAVE_DISK_SPACE OFF
 set_global_assignment -name REMOVE_DUPLICATE_REGISTERS OFF
+set_global_assignment -name TOP_LEVEL_ENTITY top
 
 # Fitter Assignments
 # ==================

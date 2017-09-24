@@ -147,13 +147,6 @@ I   SSSSSSSSS   source operand
 
 */
 
-
-`include "cog_ram.v"
-`include "cog_alu.v"
-`include "cog_ctr.v"
-`include "cog_vid.v"
-
-
 module              cog
 (
 input               nres,           // reset

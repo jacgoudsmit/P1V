@@ -21,9 +21,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-`include "tim.v"
-`include "dig.v"
-
 module              top
 (
 input               clock_50,           // clock input
