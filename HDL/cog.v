@@ -147,7 +147,6 @@ I   SSSSSSSSS   source operand
 
 */
 
-
 module              cog
 (
 input               nres,           // reset
