@@ -40,7 +40,7 @@ output reg  [32:0]  phs,
 
 output      [31:0]  pin_out,
 
-output              pll
+output reg          pll
 );
 
 
@@ -116,6 +116,7 @@ if (~|ctr[30:28] && |ctr[27:26])
 
 wire [7:0] pll_taps = pll_fake[35:28];
 
-assign pll          = pll_taps[~ctr[25:23]];
+always @(posedge clk_pll)
+    pll <= pll_taps[~ctr[25:23]]; // Registering pll output eliminates DRC warnings about sourcing a clock from a combinational pin (when using assign instead)
 
 endmodule
