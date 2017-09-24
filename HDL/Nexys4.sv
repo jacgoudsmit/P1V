@@ -29,19 +29,20 @@ input  wire         rts,
 input  wire         reset
 );
 
+parameter           NUMCOGS = 8;
+parameter           INVERT_COG_LEDS = 0;
+
 
 //
 // Clock generator
 //
 
 
+wire                inp_res;
+wire [7:0]          cfg;
 wire                clock_160;
-wire                pllX16;
-wire                pllX8;
-wire                pllX4;
-wire                pllX2;
-wire                pllX1;
-wire                pllX16_buf_i;
+wire                clk_cog;
+wire                clk_pll;
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
@@ -49,47 +50,30 @@ xilinx_clock #(
     .CLK_DIVIDE     (4)
 ) xilinx_clock_ (
     .clk_in         (CLK100MHZ),
+    .cfg            (cfg[6:0]),
+    .res            (inp_res),
     .clock_160      (clock_160),
-    .pllX16         (pllX16_buf_i),
-    .pllX8          (pllX8),
-    .pllX4          (pllX4),
-    .pllX2          (pllX2),
-    .pllX1          (pllX1)    
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll)   
 );
 
-   BUFG clock_80 (      // Directly instantiate a clock buffer for the 80Mhz clock, as it goes some places directly,
-   .O(pllX16),          // rather than through the clock selector logic (which puts it on a BUFGMUX chain)
-   .I(pllX16_buf_i)
-);
-
-//
-// LEDs
-//
-
-wire[7:0] cogled;
-
-genvar j;
-generate
-    for (j = 0; j < 8; j++)
-    begin
-        assign ledg[j] = cogled[j];
-    end
-endgenerate
-    
 
 //
 // Reset
 //
 
 
-wire                inp_res;
+reg                 nres;
 
 reset reset_ (
     .clock_160      (clock_160),
     .async_res      (~rts | ~reset),
     .res            (inp_res)
 );
-          
+
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
+
 
 //
 // Inputs
@@ -111,10 +95,11 @@ assign pin_in[31:0] = pin[31:0];
 //    .PIPELINE_STAGES (2),
 //    .INIT            (32'b0)
 //) in_sync_ (
-//    .pllX16         (pllX16),
+//    .pllX16       (pllX16),
 //    .pin_in         (pin_in),
 //    .sync_out       (sync_out)
 //);
+
 
 //
 // Outputs
@@ -140,25 +125,22 @@ endgenerate
 
 
 //
-// Virtual Propeller
+// Propeller 1 core module
 //
 
 
-p1v #(
-    .NUMCOGS        (8)
-) p1v_ (
-    .clock_160      (clock_160),
-    .pllX16         (pllX16),
-    .pllX8          (pllX8),
-    .pllX4          (pllX4),
-    .pllX2          (pllX2),
-    .pllX1          (pllX1),
-    .inp_resn       (~inp_res),
-    .ledg           (cogled),
-    .pin_out        (pin_out),
-    .pin_in         (pin_in),
-    .pin_dir        (pin_dir)
+dig #(
+    .INVERT_COG_LEDS (INVERT_COG_LEDS),
+    .NUMCOGS    (NUMCOGS)
+) core (
+    .nres       (nres),
+    .cfg        (cfg),
+    .clk_cog    (clk_cog),
+    .clk_pll    (clk_pll),
+    .pin_in     (pin_in),
+    .pin_out    (pin_out),
+    .pin_dir    (pin_dir),
+    .cog_led    (ledg)
 );
-
 
 endmodule
