@@ -811,18 +811,52 @@ set_clock_groups -name pll7_exclusive -logically_exclusive -group [get_clocks pl
 
 # Make PLL trees asynchronous from cogs
 #set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin clk_cog CLKFBOUT clock_160}] -group [get_clocks plla*]
-set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin CLKFBOUT pllX* clock_80 clock_160}] -group [get_clocks plla*]
+set_clock_groups -name async_clks -asynchronous -group [get_clocks {sys_clk_pin CLKFBOUT pllX* clock_160}] -group [get_clocks plla*]
 ## Other Vivado settings
 
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 
-
+# Tell the timing analyzer that the various clock modes of the prop (<= 80Mhz) cannot all be in use at the same time.
 set_clock_groups -name clkpll_taps -logically_exclusive -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT5]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT4]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT3]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT2]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]]
-#create_clock -period 25.000 -name pllX8 -waveform {0.000 12.500} -add [get_pins xilinx_clock_/genclock/CLKOUT2]
-#create_clock -period 50.000 -name pllX4 -waveform {0.000 25.000} -add [get_pins xilinx_clock_/genclock/CLKOUT3]
-#create_clock -period 100.000 -name pllX2 -waveform {0.000 50.000} -add [get_pins xilinx_clock_/genclock/CLKOUT4]
-#create_clock -period 200.000 -name pllX1 -waveform {0.000 100.000} -add [get_pins xilinx_clock_/genclock/CLKOUT5]
 
-#create_pblock {pblock_cfgx_reg[5]}
-#add_cells_to_pblock [get_pblocks {pblock_cfgx_reg[5]}] [get_cells -quiet [list {p1v_/clkgen/cfgx_reg[5]}]]
-#resize_pblock [get_pblocks {pblock_cfgx_reg[5]}] -add {SLICE_X52Y93:SLICE_X55Y104}
+# These pblocks help physically locate the various bits of the Prop to minimize routing difficulties (e.g. put the hub in the middle,
+# near its block RAMs, put the individual cog rams as close to the relevant cog as possible, etc.
+create_pblock {pblock_coggen[7].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[7].cog_}] [get_cells -quiet [list {p1v_/core/coggen[7].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[7].cog_}] -add {SLICE_X58Y61:SLICE_X69Y99}
+resize_pblock [get_pblocks {pblock_coggen[7].cog_}] -add {RAMB18_X1Y26:RAMB18_X1Y39}
+create_pblock {pblock_coggen[3].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[3].cog_}] [get_cells -quiet [list {p1v_/core/coggen[3].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[3].cog_}] -add {SLICE_X78Y118:SLICE_X89Y149}
+resize_pblock [get_pblocks {pblock_coggen[3].cog_}] -add {RAMB18_X3Y48:RAMB18_X3Y59}
+create_pblock {pblock_coggen[0].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[0].cog_}] [get_cells -quiet [list {p1v_/core/coggen[0].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[0].cog_}] -add {SLICE_X78Y64:SLICE_X89Y99}
+resize_pblock [get_pblocks {pblock_coggen[0].cog_}] -add {RAMB18_X3Y26:RAMB18_X3Y39}
+create_pblock {pblock_coggen[5].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[5].cog_}] [get_cells -quiet [list {p1v_/core/coggen[5].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[5].cog_}] -add {SLICE_X36Y74:SLICE_X57Y96}
+create_pblock {pblock_coggen[6].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[6].cog_}] [get_cells -quiet [list {p1v_/core/coggen[6].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[6].cog_}] -add {SLICE_X36Y51:SLICE_X57Y73}
+create_pblock {pblock_coggen[1].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[1].cog_}] [get_cells -quiet [list {p1v_/core/coggen[1].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[1].cog_}] -add {SLICE_X78Y100:SLICE_X89Y117 SLICE_X62Y105:SLICE_X77Y119}
+resize_pblock [get_pblocks {pblock_coggen[1].cog_}] -add {RAMB18_X3Y40:RAMB18_X3Y45}
+create_pblock {pblock_coggen[4].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[4].cog_}] [get_cells -quiet [list {p1v_/core/coggen[4].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[4].cog_}] -add {SLICE_X52Y120:SLICE_X77Y135}
+resize_pblock [get_pblocks {pblock_coggen[4].cog_}] -add {RAMB18_X1Y48:RAMB18_X2Y53}
+create_pblock {pblock_coggen[2].cog_}
+add_cells_to_pblock [get_pblocks {pblock_coggen[2].cog_}] [get_cells -quiet [list {p1v_/core/coggen[2].cog_}]]
+resize_pblock [get_pblocks {pblock_coggen[2].cog_}] -add {SLICE_X70Y51:SLICE_X77Y99}
+resize_pblock [get_pblocks {pblock_coggen[2].cog_}] -add {RAMB18_X2Y22:RAMB18_X2Y39}
+create_pblock pblock_hub_
+add_cells_to_pblock [get_pblocks pblock_hub_] [get_cells -quiet [list p1v_/core/hub_]]
+resize_pblock [get_pblocks pblock_hub_] -add {SLICE_X58Y100:SLICE_X77Y104}
+resize_pblock [get_pblocks pblock_hub_] -add {RAMB18_X1Y40:RAMB18_X2Y41}
+resize_pblock [get_pblocks pblock_hub_] -add {RAMB36_X1Y20:RAMB36_X2Y23}
+create_pblock pblock_clkgen
+add_cells_to_pblock [get_pblocks pblock_clkgen] [get_cells -quiet [list p1v_/clkgen]]
+resize_pblock [get_pblocks pblock_clkgen] -add {SLICE_X50Y100:SLICE_X53Y101}
+

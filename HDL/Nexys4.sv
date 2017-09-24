@@ -36,11 +36,12 @@ input  wire         reset
 
 
 wire                clock_160;
-wire                clock_80;
+wire                pllX16;
 wire                pllX8;
 wire                pllX4;
 wire                pllX2;
 wire                pllX1;
+wire                pllX16_buf_i;
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
@@ -49,13 +50,17 @@ xilinx_clock #(
 ) xilinx_clock_ (
     .clk_in         (CLK100MHZ),
     .clock_160      (clock_160),
-    .clock_80       (clock_80),
+    .pllX16         (pllX16_buf_i),
     .pllX8          (pllX8),
     .pllX4          (pllX4),
     .pllX2          (pllX2),
     .pllX1          (pllX1)    
 );
 
+   BUFG clock_80 (      // Directly instantiate a clock buffer for the 80Mhz clock, as it goes some places directly,
+   .O(pllX16),          // rather than through the clock selector logic (which puts it on a BUFGMUX chain)
+   .I(pllX16_buf_i)
+);
 
 //
 // LEDs
@@ -63,11 +68,11 @@ xilinx_clock #(
 
 wire[7:0] cogled;
 
-genvar l;
+genvar j;
 generate
-    for (l = 0; l < 8; l++)
+    for (j = 0; j < 8; j++)
     begin
-        assign ledg[l] = cogled[l];
+        assign ledg[j] = cogled[j];
     end
 endgenerate
     
@@ -99,14 +104,14 @@ assign pin_in[31:0] = pin[31:0];
 //// Asynchronous Input Synchronization - Adapted from Xilinx language template
 //// Since all 32 bits of pin_in are asynchronous to any internal clocking source
 //// in the Artix, in order to reduce the risk of metastability we run all input
-//// pin paths through a synchronizer to bring everything into the clock_80 domain safely.
+//// pin paths through a synchronizer to bring everything into the pllX16 domain safely.
 
 //inp_synchronizer #(
 //    .SYNC_STAGES     (2),
 //    .PIPELINE_STAGES (2),
 //    .INIT            (32'b0)
 //) in_sync_ (
-//    .clock_80       (clock_80),
+//    .pllX16         (pllX16),
 //    .pin_in         (pin_in),
 //    .sync_out       (sync_out)
 //);
@@ -116,11 +121,8 @@ assign pin_in[31:0] = pin[31:0];
 //
 
 
-//(* KEEP="true" *)
 wire[31:0] pin_out;
-//(* KEEP="true" *)
 wire[31:0] pin_dir;
-//(* KEEP="true" *)
 //wire[31:0] prop_input_bus;
 
 // Based on direction register bits, send Prop outputs to output pins, or Hi-Z when direction is input.
@@ -146,7 +148,7 @@ p1v #(
     .NUMCOGS        (8)
 ) p1v_ (
     .clock_160      (clock_160),
-    .clock_80       (clock_80),
+    .pllX16         (pllX16),
     .pllX8          (pllX8),
     .pllX4          (pllX4),
     .pllX2          (pllX2),

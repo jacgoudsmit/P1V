@@ -1,8 +1,6 @@
-// cog
-
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
+Cog top level
 
 This file is part of the hardware description for the Propeller 1 Design.
 
@@ -146,12 +144,6 @@ I   SSSSSSSSS   source operand
     DDDDDDDDD   register
 
 */
-
-
-`include "cog_ram.v"
-`include "cog_alu.v"
-`include "cog_ctr.v"
-`include "cog_vid.v"
 
 
 module              cog
