@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2017 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="20" Path="C:/Users/andrewsi/Documents/GitHub/P1V/HDL/P1V_Nexys4.xpr">
+<Project Version="7" Minor="20" Path="D:/GitHub/P1V/HDL/P1V_Nexys4.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="f8760ea7963a40758a3b8134323837df"/>
@@ -153,6 +153,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PSRCDIR/sim_1/new/simtop.v">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -160,7 +161,7 @@
       </File>
       <Config>
         <Option Name="DesignMode" Val="RTL"/>
-        <Option Name="TopModule" Val="simtop"/>
+        <Option Name="TopModule" Val="Nexys4"/>
         <Option Name="TopLib" Val="xil_defaultlib"/>
         <Option Name="TopAutoSet" Val="TRUE"/>
         <Option Name="TransportPathDelay" Val="0"/>

@@ -1,8 +1,6 @@
-// cog
-
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
+Cog top level
 
 This file is part of the hardware description for the Propeller 1 Design.
 

@@ -33,27 +33,17 @@ output wire         ampSD
 parameter           NUMCOGS = 8;
 parameter           INVERT_COG_LEDS = 0;
 
-wire                clock_160, clk_cog, clk_pll;
-
-//
-// Reset
-//
-
-
-wire                inp_res;
-
-reset reset_ (
-    .clock_160      (clock_160),
-    .async_res      (~rts | ~reset),
-    .res            (inp_res)
-);
-          
 
 //
 // Clock generator
 //
 
+
+wire                inp_res;
 wire [7:0]          cfg;
+wire                clock_160;
+wire                clk_cog;
+wire                clk_pll;
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
@@ -67,6 +57,24 @@ xilinx_clock #(
     .clk_cog        (clk_cog),
     .clk_pll        (clk_pll)   
 );
+
+
+//
+// Reset
+//
+
+
+reg                 nres;
+
+reset reset_ (
+    .clock_160      (clock_160),
+    .async_res      (~rts | ~reset),
+    .res            (inp_res)
+);
+
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
+
 
 //
 // Inputs
@@ -85,17 +93,14 @@ assign pin_in[31:0] = pin[31:0];
 
 wire[31:0] pin_out;
 wire[31:0] pin_dir;
-//wire[31:0] prop_input_bus;
 
 // Based on direction register 
-
 
 genvar i;
 generate
     for (i = 0; i < 32; i++)
     begin
         assign pin[i] = pin_dir[i] ? pin_out[i] : 1'bz;
-		//     assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
     end
 endgenerate
 
@@ -110,25 +115,24 @@ reg                 nres;
 reg         [23:0]  reset_cnt;
 reg                 reset_to;
 
+
 //
 // Propeller 1 core module
 //
 
-always @(posedge clk_cog)
-    nres <= ~inp_res & !cfg[7];
 
 dig #(
-            .INVERT_COG_LEDS (INVERT_COG_LEDS),
-            .NUMCOGS    (NUMCOGS)
+    .INVERT_COG_LEDS (INVERT_COG_LEDS),
+    .NUMCOGS    (NUMCOGS)
 ) core (
-            .nres       (nres),
-            .cfg        (cfg),
-            .clk_cog    (clk_cog),
-            .clk_pll    (clk_pll),
-            .pin_in     (pin_in),
-            .pin_out    (pin_out),
-            .pin_dir    (pin_dir),
-            .cog_led    (ledg)
-        );
+    .nres       (nres),
+    .cfg        (cfg),
+    .clk_cog    (clk_cog),
+    .clk_pll    (clk_pll),
+    .pin_in     (pin_in),
+    .pin_out    (pin_out),
+    .pin_dir    (pin_dir),
+    .cog_led    (ledg)
+);
 
 endmodule
