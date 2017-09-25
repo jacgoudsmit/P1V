@@ -85,21 +85,6 @@ wire[31:0] pin_in;
 
 assign pin_in[31:0] = pin[31:0];
 
-//// Asynchronous Input Synchronization - Adapted from Xilinx language template
-//// Since all 32 bits of pin_in are asynchronous to any internal clocking source
-//// in the Artix, in order to reduce the risk of metastability we run all input
-//// pin paths through a synchronizer to bring everything into the pllX16 domain safely.
-
-//inp_synchronizer #(
-//    .SYNC_STAGES     (2),
-//    .PIPELINE_STAGES (2),
-//    .INIT            (32'b0)
-//) in_sync_ (
-//    .pllX16       (pllX16),
-//    .pin_in         (pin_in),
-//    .sync_out       (sync_out)
-//);
-
 
 //
 // Outputs
