@@ -26,8 +26,12 @@ input  wire         CLK100MHZ,
 output wire   [7:0] ledg,
 inout  wire  [31:0] pin,
 input  wire         rts,
-input  wire         reset
+input  wire         reset,
+output wire         ampSD
 );
+
+parameter           NUMCOGS = 8;
+parameter           INVERT_COG_LEDS = 0;
 
 
 //
@@ -36,44 +40,39 @@ input  wire         reset
 
 
 wire                clock_160;
+wire                clk_cog;
+wire                clk_pll;
+wire [7:0]          cfg;
+wire                inp_res;
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
-    .CLK_MULTIPLY   (8),
-    .CLK_DIVIDE     (5)
+    .CLK_MULTIPLY   (64),
+    .CLK_DIVIDE     (4)
 ) xilinx_clock_ (
     .clk_in         (CLK100MHZ),
-    .clock_160      (clock_160)
+    .cfg            (cfg[6:0]),
+    .res            (inp_res),
+    .clock_160      (clock_160),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll)   
 );
 
 
 //
-// LEDs
-//
-
-wire[7:0] cogled;
-
-genvar j;
-generate
-    for (j = 0; j < 8; j++)
-    begin
-        assign ledg[j] = cogled[j];
-    end
-endgenerate
-    
-//
 // Reset
 //
 
-
-wire                inp_res;
 
 reset reset_ (
     .clock_160      (clock_160),
     .async_res      (~rts | ~reset),
     .res            (inp_res)
 );
-          
+
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
+
 
 //
 // Inputs
@@ -81,6 +80,7 @@ reset reset_ (
 
 
 wire[31:0] pin_in;
+
 assign pin_in[31:0] = pin[31:0];
 
 
@@ -97,23 +97,30 @@ generate
     for (i = 0; i < 32; i++)
     begin
         assign pin[i] = pin_dir[i] ? pin_out[i] : 1'bz;
+//        assign prop_input_bus[i] = pin_dir[i] ? pin_out[i] : sync_out[i];
     end
 endgenerate
 
-//
-// Virtual Propeller
-//
+//Turn on audio amplifier power when PWM output on Pin 10 is set to output direction
+assign              ampSD = pin_dir[10];
 
 
-p1v #(
-    .NUMCOGS        (8)
-) p1v_ (
-    .clock_160      (clock_160),
-    .inp_resn       (~inp_res),
-    .ledg           (cogled),
-    .pin_out        (pin_out),
+//
+// Propeller 1 core module
+//
+
+dig #(
+    .INVERT_COG_LEDS (INVERT_COG_LEDS),
+    .NUMCOGS        (NUMCOGS)
+) core (
+    .nres           (nres),
+    .cfg            (cfg),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll),
     .pin_in         (pin_in),
-    .pin_dir        (pin_dir)
+    .pin_out        (pin_out),
+    .pin_dir        (pin_dir),
+    .cog_led        (ledg)
 );
 
 
