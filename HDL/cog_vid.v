@@ -2,8 +2,6 @@
 
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
-
 This file is part of the hardware description for the Propeller 1 Design.
 
 The Propeller 1 Design is free software: you can redistribute it and/or modify

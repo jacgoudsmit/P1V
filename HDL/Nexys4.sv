@@ -39,12 +39,11 @@ parameter           INVERT_COG_LEDS = 0;
 //
 
 
+wire                inp_res;
+wire [7:0]          cfg;
 wire                clock_160;
 wire                clk_cog;
 wire                clk_pll;
-wire [7:0]          cfg;
-wire                inp_res;
-
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
     .CLK_MULTIPLY   (64),
@@ -63,6 +62,8 @@ xilinx_clock #(
 // Reset
 //
 
+
+reg                 nres;
 
 reset reset_ (
     .clock_160      (clock_160),
@@ -91,6 +92,11 @@ assign pin_in[31:0] = pin[31:0];
 
 wire[31:0] pin_out;
 wire[31:0] pin_dir;
+//wire[31:0] prop_input_bus;
+
+// Based on direction register bits, send Prop outputs to output pins, or Hi-Z when direction is input.
+// When direction is output, the input bus should immediately mirror the data being output 
+// without passing through the synchronizers. Otherwise, use the result of the async input synchronizers.
 
 genvar i;
 generate
