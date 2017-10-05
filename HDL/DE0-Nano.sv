@@ -19,8 +19,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "p1v.v"
-`include "altera.v"
 
 module              DE0Nano
 (
@@ -37,7 +35,7 @@ inout        [33:0] GPIO1               // Bottom header
 
 
 //
-// Mapt the Propeller pins to match the picture in the documentation
+// Map the Propeller pins to match the picture in the documentation
 //
 
 

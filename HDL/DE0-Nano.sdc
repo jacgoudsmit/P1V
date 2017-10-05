@@ -23,81 +23,81 @@ create_clock -name clock_io -period 12.500
 
 derive_pll_clocks
 
-# create_generated_clock -name cog_pll -source {pll|auto_generated|pll1|inclk[0]} -divide_by 5 -multiply_by 16 -duty_cycle 50.00 -name {pll|auto_generated|pll1|clk[0]} {pll|auto_generated|pll1|clk[0]}
+# create_generated_clock -name cog_pll -source {altera_|pll|auto_generated|pll1|inclk[0]} -divide_by 5 -multiply_by 16 -duty_cycle 50.00 -name {altera_|pll|auto_generated|pll1|clk[0]} {altera_|pll|auto_generated|pll1|clk[0]}
 
-create_generated_clock -name cog_clk -source [get_pins {pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers { tim:clkgen|divide[12] }]
+create_generated_clock -name cog_clk -source [get_pins {altera_|pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers { p1v_|tim:clkgen|divide[12] }]
 
-create_generated_clock -name ctra0_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra0_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra0_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra0_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra0_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra0_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra0_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra0_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra0_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra0_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra0_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra0_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra0_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra0_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra0_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra0_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra1_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra1_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra1_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra1_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra1_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra1_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra1_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra1_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra1_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra1_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra1_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra1_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra1_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra1_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra1_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra1_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra2_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra2_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra2_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra2_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra2_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra2_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra2_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra2_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra2_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra2_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra2_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra2_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra2_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra2_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra2_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra2_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra3_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra3_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra3_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra3_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra3_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra3_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra3_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra3_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra3_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra3_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra3_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra3_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra3_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra3_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra3_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra3_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra4_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra4_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra4_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra4_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra4_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra4_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra4_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra4_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra4_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra4_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra4_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra4_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra4_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra4_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra4_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra4_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra5_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra5_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra5_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra5_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra5_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra5_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra5_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra5_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra5_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra5_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra5_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra5_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra5_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra5_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra5_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra5_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra6_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra6_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra6_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra6_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra6_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra6_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra6_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra6_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra6_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra6_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra6_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra6_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra6_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra6_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra6_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra6_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
-create_generated_clock -name ctra7_pll0 -source {pll|auto_generated|pll1|clk[0]} -divide_by 2   {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[28]}
-create_generated_clock -name ctra7_pll1 -source {pll|auto_generated|pll1|clk[0]} -divide_by 4   {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[29]}
-create_generated_clock -name ctra7_pll2 -source {pll|auto_generated|pll1|clk[0]} -divide_by 8   {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[30]}
-create_generated_clock -name ctra7_pll3 -source {pll|auto_generated|pll1|clk[0]} -divide_by 16  {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[31]}
-create_generated_clock -name ctra7_pll4 -source {pll|auto_generated|pll1|clk[0]} -divide_by 32  {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[32]}
-create_generated_clock -name ctra7_pll5 -source {pll|auto_generated|pll1|clk[0]} -divide_by 64  {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[33]}
-create_generated_clock -name ctra7_pll6 -source {pll|auto_generated|pll1|clk[0]} -divide_by 128 {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[34]}
-create_generated_clock -name ctra7_pll7 -source {pll|auto_generated|pll1|clk[0]} -divide_by 256 {dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[35]}
+create_generated_clock -name ctra7_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[28]}
+create_generated_clock -name ctra7_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[29]}
+create_generated_clock -name ctra7_pll2 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 8   {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[30]}
+create_generated_clock -name ctra7_pll3 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 16  {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[31]}
+create_generated_clock -name ctra7_pll4 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 32  {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[32]}
+create_generated_clock -name ctra7_pll5 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 64  {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[33]}
+create_generated_clock -name ctra7_pll6 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 128 {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[34]}
+create_generated_clock -name ctra7_pll7 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 256 {p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll_fake[35]}
 
 #**************************************************************
 # Set Clock Latency
@@ -132,7 +132,7 @@ set_output_delay -clock clock_io -max 0 [get_ports {LED* GPIO0* GPIO1*}]
 #**************************************************************
 
 set_clock_groups -exclusive \
-    -group { CLOCK_50 pll|auto_generated|pll1|clk[0] cog_clk}
+    -group { CLOCK_50 altera_|pll|auto_generated|pll1|clk[0] cog_clk}
     
 set_clock_groups -exclusive \
     -group {ctra0_pll0} \
