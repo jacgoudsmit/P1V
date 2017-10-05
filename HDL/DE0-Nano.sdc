@@ -23,9 +23,10 @@ create_clock -name clock_io -period 12.500
 
 derive_pll_clocks
 
-# create_generated_clock -name cog_pll -source {altera_|pll|auto_generated|pll1|inclk[0]} -divide_by 5 -multiply_by 16 -duty_cycle 50.00 -name {altera_|pll|auto_generated|pll1|clk[0]} {altera_|pll|auto_generated|pll1|clk[0]}
+# Generated automatically by derive_pll_clocks
+# create_generated_clock -source {altera_|pll|auto_generated|pll1|inclk[0]} -divide_by 5 -multiply_by 16 -duty_cycle 50.00 -name {altera_|pll|auto_generated|pll1|clk[0]} {altera_|pll|auto_generated|pll1|clk[0]}
 
-create_generated_clock -name cog_clk -source [get_pins {altera_|pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers { p1v_|tim:clkgen|divide[12] }]
+create_generated_clock -name cog_clk -source [get_pins {altera_|pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers { p1v:p1v_|tim:clkgen|divide[12] }]
 
 create_generated_clock -name ctra0_pll0 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 2   {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[28]}
 create_generated_clock -name ctra0_pll1 -source {altera_|pll|auto_generated|pll1|clk[0]} -divide_by 4   {p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll_fake[29]}
@@ -219,6 +220,7 @@ set_clock_groups -exclusive \
 #**************************************************************
 
 set_false_path -from [get_clocks {ctra*}] -to clock_io
+set_false_path -from [get_ports {KEY[0]}]
 
 #**************************************************************
 # Set Multicycle Path

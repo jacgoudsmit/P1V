@@ -19,8 +19,6 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
 
-`include "tim.v"
-`include "dig.v"
 
 module              p1v
 (
@@ -31,7 +29,7 @@ input       [31:0]  pin_in,
 output      [31:0]  pin_out,
 output      [31:0]  pin_dir,
 
-output       [7:0]  ledg                // cog leds
+output       [7:0]  ledg                // "cog active" leds
 );
 
 parameter           INVERT_COG_LEDS = 0;
@@ -44,8 +42,6 @@ parameter           NUMCOGS = 8;
 reg                 nres;
 wire         [7:0]  cfg;
 wire                clkfb, clk;
-reg         [23:0]  reset_cnt;
-reg                 reset_to;
 wire                clk_pll;
 wire                clk_cog;
 
@@ -75,7 +71,8 @@ dig #(
             .pin_in     (pin_in),
             .pin_out    (pin_out),
             .pin_dir    (pin_dir),
-            .cog_led    (ledg) );
+            .cog_led    (ledg)
+        );
 
 always @ (posedge clk_cog)
     nres <= inp_resn & !cfg[7];
