@@ -22,23 +22,23 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 
 module              reset
 (
-input               clock_160,
+input               clock,
 input               async_res,
 
 output reg          res
 );
 
-parameter DELAY_CYCLES = 32'd8_000_000; // 50ms
+parameter DELAY_CYCLES = 32'd99; // 50ms at 19.5khz
 
 reg [31:0]          reset_cnt;
 wire                out_res;
 
 assign out_res = |reset_cnt;
 
-always @(posedge clock_160)
+always @(posedge clock)
     res <= out_res;
     
-always @(posedge clock_160 or posedge async_res)
+always @(posedge clock or posedge async_res)
     if (async_res) begin
         reset_cnt <= DELAY_CYCLES;
     end else if (out_res) begin

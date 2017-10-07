@@ -27,7 +27,8 @@ input [6:0]         cfg,
 input               res,
 output              clock_160,
 output              clk_cog,
-output              clk_pll
+output              clk_pll,
+output              slow_clk
 );
 
 //
@@ -166,6 +167,11 @@ BUFGMUX_CTRL BUFGMUX_CTRL_lastpll (
       .I0(pllX1_or_rcslow),
       .I1(pllX2),
       .S(clksel == 5'b11100 || clksel[2:0] == 3'b000)   // Select PLLX2 when true, otherwise lower
+);
+
+BUFG slow_bufg (
+    .O(slow_clk),
+    .I(divide[6])
 );
       
 BUFGMUX_CTRL BUFGMUX_CTRL_rcslow (
