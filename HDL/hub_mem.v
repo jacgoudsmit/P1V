@@ -82,6 +82,8 @@ end
 
 // 4096 x 32 rom containing character definitions ($8000..$BFFF)
 
+`ifndef DISABLE_FONT_ROM
+
 reg [31:0] rom_low [4095:0];
 
 initial
@@ -95,6 +97,7 @@ always @(posedge clk_cog)
 if (ena_bus && a[13:12] == 2'b10)
     rom_low_q <= rom_low[a[11:0]];
 
+`endif
 
 // 4096 x 32 rom containing sin table, log table, booter, and interpreter ($C000..$FFFF)
 

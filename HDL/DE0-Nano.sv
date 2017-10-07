@@ -61,13 +61,6 @@ assign pin_in[30]   = GPIO0[29];
 assign GPIO0[27]    = pin_dir[31] ? pin_out[31] : 1'bZ;
 assign GPIO0[29]    = pin_dir[30] ? pin_out[30] : 1'bZ;
 
-// Unused pins.
-// Note, these are also disabled in the .qsf file
-assign GPIO0[26:0]  = {27{1'bZ}};
-assign GPIO0[28]    = 1'bZ;
-assign GPIO0[33:30] = {4{1'bZ}};
-assign GPIO1[3:0]   = {4{1'bZ}};
-
 
 //
 // Clock generator for Altera FPGA's
