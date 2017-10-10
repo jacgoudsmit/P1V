@@ -28,10 +28,10 @@ output wire  [15:0] ledg,
 input  wire  [15:0] switch,
 input  wire         rts,
 input  wire         reset,
-inout  wire         ampSD,              // Even though some of these Nexys4 pins are technically for output only,
-inout  wire         ampPWM,             // they are declared as inout so that output signals can feed back to the input pin bus
+output reg          ampSD,              // Even though some of these Nexys4 pins are technically for output only,
+output reg          ampPWM,             // they are declared as inout so that output signals can feed back to the input pin bus
 input  wire         uartTX,             // through the IOBUF, as per the original Propeller design.
-inout  wire         uartRX,
+output reg          uartRX,
 inout  wire         PS2Clk,
 inout  wire         PS2Data,
 inout  wire   [7:0] pmodA,
@@ -86,7 +86,7 @@ xilinx_clock #(
 );
 
 
-//Debounce toggle switch inputs to avoid thrashing pin assignments unnecessarily.
+// Debounce toggle switch inputs to avoid thrashing pin assignments unnecessarily.
 wire   [15:0]   switch_db;
 Debounce sw_debounce (
     .clock  (slow_clk),
@@ -160,21 +160,19 @@ endgenerate
 //Turn on audio amplifier power when PWM output on Pin 10 is set to output direction, by default.
 //When switch 14 is on, pin 10 is redirected to pmodB[1] for in or out, and ampSD is off.
 
-reg pmodB_out_1, ampSD_out, ampPWM_out;
+reg pmodB_out_1;
 assign pmodB[1] = pmodB_out_1;
-assign ampSD = ampSD_out;
-assign ampPWM = ampPWM_out;
 
 always @(switch_db[14], pin_dir[10], pin_out[10], pmodB[1], ampPWM) begin
     if (~switch_db[14]) begin
-        ampSD_out = pin_dir[10];  //Turn on audio amplifier if switch 14 is off (default) and pin 10 is set as an output.
-        ampPWM_out = pin_dir[10] ? pin_out[10] : 1'bZ;     // Also treat pin 10 as PWM audio out in that case.
+        ampSD = pin_dir[10];  //Turn on audio amplifier if switch 14 is off (default) and pin 10 is set as an output.
+        ampPWM = pin_dir[10] ? pin_out[10] : 1'bZ;     // Also treat pin 10 as PWM audio out in that case.
         pmodB_out_1 = 1'bZ;
         pin_in_ext[10] = ampPWM;
     end else begin
-        ampSD_out = 1'bZ;
-        ampPWM_out = 1'bZ;
-        pmodB_out_1 = pin_dir[10] ? pin_out[10] : 1'bZ;    // If pin10 is output and switch is on, send to PmodB[1].
+        ampSD = 1'bZ;
+        ampPWM = 1'bZ;
+        pmodB_out_1 = pin_dir[10] ? pin_out[10] : 1'bZ;
         pin_in_ext[10] = pmodB[1];                             // Use pmodB[1] as pin10 input.
     end 
 end
@@ -182,14 +180,12 @@ end
 
 // Multiplex the prop pins 30 and 31 to a Propeller Plug, either via USB UART (no plug needed), or PMOD D based on SW15 position.
 reg [7:0] pmodD_out;
-reg uartRX_out;
 assign pmodD[7:5] = pmodD_out[7:5];
-assign uartRX = uartRX_out;
 
 always @(switch_db[15], uartTX, pin_out[31:29], pin_dir[31:29], pmodD[7:5], rts) begin
     if (~switch_db[15]) begin
         //Switch low (default - use USB UART)
-        uartRX_out = pin_out[30];                           // Transmit out to UART RX
+        uartRX = pin_out[30];                               // Transmit out to UART RX
         usb_reset = rts;                                    // USB reset the propeller from UART RTS
         propplug_reset = 1'b1;                              // Tie the prop plug active low reset signal to 1, it's not connected.
         pin_in_ext[31] = uartTX;                                // Pin31 gets input from USB UART or pmodD[6] based on switch
@@ -200,7 +196,7 @@ always @(switch_db[15], uartTX, pin_out[31:29], pin_dir[31:29], pmodD[7:5], rts)
         pmodD_out[5] = pin_dir[29] ? pin_out[29] : 1'bZ;    // pmodD[5] becomes pin 29 output (when direction is output) if no prop plug is expected.
     end else begin
         //Switch high - use real Propeller Plug on pmodD pins 10-8 (bits 7-5)
-        uartRX_out = 1'bZ;                                              // Disconnect USB UART
+        uartRX = 1'bZ;                                                  // Disconnect USB UART
         usb_reset = 1'b1;                                               // USB UART reset disabled when switch high.
         propplug_reset = pmodD[7];                                      // In from prop plug reset line
         pin_in_ext[31] = pmodD[6];                                          // Connect pin31 to Prop Plug on pmodD
@@ -299,6 +295,5 @@ always @(switch_db[12], pin_dir[27:24], pin_out[27:24], PS2Data, PS2Clk, pmodD[3
     pmodD_out[3:2] = 2'bZZ;
   end    
 end
-
 
 endmodule
