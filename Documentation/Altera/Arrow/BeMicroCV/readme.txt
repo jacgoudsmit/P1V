@@ -2,7 +2,7 @@ To compile the P8X32A hardware description and load it into the BeMicroCV:
 
 1) Open Quartus II
 2) File | Open Project...
-3) Select 'P1V_Altera.qpf' file from this directory
+3) Select 'P1V_Altera_Cyclone5.qpf' file from the HDL directory
 3a) Click Project | Revisions, and make sure the BeMicroCV revision is the current revision. If not, click on it, then click Set Current. Click OK to close the dialog.
 4) Press the 'play' button to start compilation (takes several minutes)
 

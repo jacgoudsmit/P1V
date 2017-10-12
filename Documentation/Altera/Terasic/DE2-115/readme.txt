@@ -2,6 +2,8 @@
 For experts: the instructions below summarize how to use the Propeller 1 Design files.
 
 For beginners: please see "Setup the Propeller 1 Design on a DE2-115.pdf"
+
+NOTE: The PDF file is not maintained and outdated. The file you're reading is current.
 --------------------------------------------------------------------------------------
 
 
@@ -9,7 +11,7 @@ To compile the P8X32A hardware description and load it into the DE2-115:
 
 1) Open Quartus II
 2) File | Open Project...
-3) Select 'P1V_Altera.qpf' file from the HDL directory
+3) Select 'P1V_Altera_Cyclone4.qpf' file from the HDL directory
 3a) Click Project | Revisions, and make sure the DE2-115 revision is the current revision. If not, click on it, then click Set Current. Click OK to close the dialog.
 4) Press the 'play' button to start compilation (takes several minutes)
 
