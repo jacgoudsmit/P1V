@@ -1,26 +1,40 @@
-# Copyright (C) 1991-2005 Altera Corporation
+# -------------------------------------------------------------------------- #
+#
+# Copyright (C) 1991-2013 Altera Corporation
 # Your use of Altera Corporation's design tools, logic functions 
-# and other software and tools, and its AMPP partner logic       
-# functions, and any output files any of the foregoing           
-# (including device programming or simulation files), and any    
-# associated documentation or information are expressly subject  
-# to the terms and conditions of the Altera Program License      
-# Subscription Agreement, Altera MegaCore Function License       
-# Agreement, or other applicable license agreement, including,   
-# without limitation, that your use is for the sole purpose of   
-# programming logic devices manufactured by Altera and sold by   
-# Altera or its authorized distributors.  Please refer to the    
+# and other software and tools, and its AMPP partner logic 
+# functions, and any output files from any of the foregoing 
+# (including device programming or simulation files), and any 
+# associated documentation or information are expressly subject 
+# to the terms and conditions of the Altera Program License 
+# Subscription Agreement, Altera MegaCore Function License 
+# Agreement, or other applicable license agreement, including, 
+# without limitation, that your use is for the sole purpose of 
+# programming logic devices manufactured by Altera and sold by 
+# Altera or its authorized distributors.  Please refer to the 
 # applicable agreement for further details.
-
-
-# The default values for assignments are stored in the file
-#		DE2_TOP_assignment_defaults.qdf
-# If this file doesn't exist, and for assignments not listed, see file
+#
+# -------------------------------------------------------------------------- #
+#
+# Quartus II 64-Bit
+# Version 13.0.1 Build 232 06/12/2013 Service Pack 1 SJ Web Edition
+# Date created = 01:08:46  October 12, 2017
+#
+# -------------------------------------------------------------------------- #
+#
+# Notes:
+#
+# 1) The default values for assignments are stored in the file:
+#		DE2_assignment_defaults.qdf
+#    If this file doesn't exist, see file:
 #		assignment_defaults.qdf
+#
+# 2) Altera recommends that you do not modify this file. This
+#    file is updated automatically by the Quartus II software
+#    and any changes you make may be lost or overwritten.
+#
+# -------------------------------------------------------------------------- #
 
-# Altera recommends that you do not modify this file. This
-# file is updated automatically by the Quartus II software
-# and any changes you make may be lost or overwritten.
 
 
 # Project-Wide Assignments
@@ -452,6 +466,13 @@ set_location_assignment PIN_V24 -to GPIO_1[32]
 set_location_assignment PIN_V23 -to GPIO_1[33]
 set_location_assignment PIN_W25 -to GPIO_1[34]
 set_location_assignment PIN_W23 -to GPIO_1[35]
+set_location_assignment PIN_Y15 -to FL_ADDR[20]
+set_location_assignment PIN_Y14 -to FL_ADDR[21]
+
+# Classic Timing Assignments
+# ==========================
+set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
+set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
 
 # Analysis & Synthesis Assignments
 # ================================
@@ -484,21 +505,45 @@ set_instance_assignment -name IO_STANDARD LVTTL -to ENET_DATA[0]
 set_instance_assignment -name IO_STANDARD LVTTL -to SD_DAT3
 set_global_assignment -name STRATIX_DEVICE_IO_STANDARD LVTTL
 set_global_assignment -name ERROR_CHECK_FREQUENCY_DIVISOR 1
+set_instance_assignment -name IO_STANDARD LVTTL -to FL_ADDR[20]
+set_instance_assignment -name IO_STANDARD LVTTL -to FL_ADDR[21]
 
 # Assembler Assignments
 # =====================
 set_global_assignment -name RESERVE_ALL_UNUSED_PINS_NO_OUTPUT_GND "AS INPUT TRI-STATED"
 
-set_location_assignment PIN_Y15 -to FL_ADDR[20]
-set_location_assignment PIN_Y14 -to FL_ADDR[21]
-set_instance_assignment -name IO_STANDARD LVTTL -to FL_ADDR[20]
-set_instance_assignment -name IO_STANDARD LVTTL -to FL_ADDR[21]
-set_global_assignment -name SYSTEMVERILOG_FILE DE2.sv
-set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
-set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
-set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
-set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
-set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
+# Power Estimation Assignments
+# ============================
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+
+# -----------------
+# start ENTITY(DE2)
+
+	# start DESIGN_PARTITION(Top)
+	# ---------------------------
+
+		# Incremental Compilation Assignments
+		# ===================================
+		set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
+		set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
+		set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
+
+	# end DESIGN_PARTITION(Top)
+	# -------------------------
+
+# end ENTITY(DE2)
+# ---------------
+set_global_assignment -name SYSTEMVERILOG_FILE reset.sv
+set_global_assignment -name SYSTEMVERILOG_FILE p1v.v
+set_global_assignment -name SYSTEMVERILOG_FILE altera.v
+set_global_assignment -name SYSTEMVERILOG_FILE DE2.sv
+set_global_assignment -name SYSTEMVERILOG_FILE hub_mem.v
+set_global_assignment -name SYSTEMVERILOG_FILE hub.v
+set_global_assignment -name SYSTEMVERILOG_FILE cog_vid.v
+set_global_assignment -name SYSTEMVERILOG_FILE cog_ram.v
+set_global_assignment -name SYSTEMVERILOG_FILE cog_ctr.v
+set_global_assignment -name SYSTEMVERILOG_FILE cog_alu.v
+set_global_assignment -name SYSTEMVERILOG_FILE cog.v
+set_global_assignment -name SYSTEMVERILOG_FILE dig.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
