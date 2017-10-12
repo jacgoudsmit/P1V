@@ -42,8 +42,6 @@ parameter           NUMCOGS = 8;
 reg                 nres;
 wire         [7:0]  cfg;
 wire                clkfb, clk;
-reg         [23:0]  reset_cnt;
-reg                 reset_to;
 wire                clk_pll;
 wire                clk_cog;
 
