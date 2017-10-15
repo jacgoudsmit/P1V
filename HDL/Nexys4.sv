@@ -108,7 +108,6 @@ reg[31:0] pin_in_ext;
 // Propeller Output Bus and direction register
 //
 
-
 wire[31:0] pin_out;
 wire[31:0] pin_dir;
 
@@ -180,31 +179,31 @@ end
 
 // Multiplex the prop pins 30 and 31 to a Propeller Plug, either via USB UART (no plug needed), or PMOD D based on SW15 position.
 reg [7:0] pmodD_out;
-assign pmodD[7:5] = pmodD_out[7:5];
+assign pmodD[3:2] = pmodD_out[3:2];
+assign pmodD[7] = pin_dir[28] ? pin_out[28] : 1'bZ;    // pmodD[7] always used as pin 28 (SCL) to accomodate external EEPROM
+assign pmodD[6] = pin_dir[29] ? pin_out[29] : 1'bZ;    // pmodD[6] always used as pin 29 (SDA) to accomodate external EEPROM 
+assign pin_in_ext[29] = pmodD[6];                      // pin 29 gets input from pmodD[6] for I2C bus
+assign pin_in_ext[28] = pmodD[7];                      // pin 28 gets input from pmodD[7] for I2C bus
 
-always @(switch_db[15], uartTX, pin_out[31:29], pin_dir[31:29], pmodD[7:5], rts) begin
+always @(switch_db[15], uartTX, pin_out[31:29], pin_dir[31:29], pmodD[3:1], rts) begin
     if (~switch_db[15]) begin
         //Switch low (default - use USB UART)
         uartRX = pin_out[30];                               // Transmit out to UART RX
         usb_reset = rts;                                    // USB reset the propeller from UART RTS
         propplug_reset = 1'b1;                              // Tie the prop plug active low reset signal to 1, it's not connected.
-        pin_in_ext[31] = uartTX;                                // Pin31 gets input from USB UART or pmodD[6] based on switch
-        pin_in_ext[30] = ~pin_dir[30] ? pmodD[6] : pin_out[30]; // Allow input on pmodD[6] as pin 30 when no prop plug.
-        pin_in_ext[29] = pmodD[5];                              // pin 29 gets input from pmodD[5] since it's freed up when using USB UART
-        pmodD_out[7] = pin_dir[31] ? pin_out[31] : 1'bZ;    // pmodD[7] becomes pin 31 output (when direction is output) if no prop plug is expected.
-        pmodD_out[6] = pin_dir[30] ? pin_out[30] : 1'bZ;    // pmodD[6] becomes pin 30 output (when direction is output) if no prop plug is expected.
-        pmodD_out[5] = pin_dir[29] ? pin_out[29] : 1'bZ;    // pmodD[5] becomes pin 29 output (when direction is output) if no prop plug is expected.
+        pin_in_ext[31] = uartTX;                            // Pin31 gets input from USB UART or pmodD[6] based on switch
+        pin_in_ext[30] = ~pin_dir[30] ? pmodD[2] : pin_out[30]; // Allow input on pmodD[3] as pin 30 when no prop plug.
+        pmodD_out[3] = pin_dir[31] ? pin_out[31] : 1'bZ;    // pmodD[4] becomes pin 31 output (when direction is output) if no prop plug is expected.
+        pmodD_out[2] = pin_dir[30] ? pin_out[30] : 1'bZ;    // pmodD[3] becomes pin 30 output (when direction is output) if no prop plug is expected.
     end else begin
         //Switch high - use real Propeller Plug on pmodD pins 10-8 (bits 7-5)
         uartRX = 1'bZ;                                                  // Disconnect USB UART
         usb_reset = 1'b1;                                               // USB UART reset disabled when switch high.
-        propplug_reset = pmodD[7];                                      // In from prop plug reset line
-        pin_in_ext[31] = pmodD[6];                                          // Connect pin31 to Prop Plug on pmodD
-        pin_in_ext[30] = ~pin_dir[30] ? pmodD[5] : pin_out[30];             // Pin 30 input comes from pmodD[5] so prop plug can receive data.
-        pin_in_ext[29] = pin_out[29];                                       // Pin 29 input receives from pModD[5] when Prop plug is not used, but only receives from other cogs when it is (pMod pin is needed for Tx output).
-        pmodD_out[7] = 1'bZ;                                            // Used as reset input when prop plug is in place, must high-Z the output
-        pmodD_out[6] = 1'bZ;                                            // Used as data input for prop plug, so high-Z the output.
-        pmodD_out[5] = pin_dir[30] ? pin_out[30] : 1'bZ;                // Out to plug when switch high (Pin30 output, moves from pmodD[6] to [5] in this case.)
+        propplug_reset = pmodD[3];                                      // In from prop plug reset line
+        pin_in_ext[31] = pmodD[2];                                      // Connect pin31 to Prop Plug on pmodD
+        pin_in_ext[30] = ~pin_dir[30] ? pmodD[1] : pin_out[30];         // Pin 30 input comes from pmodD[1] so prop plug can receive data.
+        pmodD_out[3] = 1'bZ;                                            // Used as reset input when prop plug is in place, must high-Z the output
+        pmodD_out[2] = 1'bZ;                                            // Used as data input for prop plug, so high-Z the output.
     end
 end
 

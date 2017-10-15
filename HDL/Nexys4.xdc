@@ -316,10 +316,13 @@ set_property IOSTANDARD LVCMOS33 [get_ports {pmodD[5]}]
 #Bank = 35, Pin name = IO_L15N_T2_DQS_35,                  Sch name = JD9
 set_property PACKAGE_PIN G2 [get_ports {pmodD[6]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pmodD[6]}]
+#Pullup needed for I2C bus for propeller
+set_property PULLUP TRUE [get_ports {pmodD[6]}]
 #Bank = 35, Pin name = IO_L13N_T2_MRCC_35,                 Sch name = JD10
 set_property PACKAGE_PIN F3 [get_ports {pmodD[7]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {pmodD[7]}]
-
+#Pullup needed for I2C bus for propeller
+set_property PULLUP TRUE [get_ports {pmodD[7]}]
 
 
 ##Pmod Header JXADC
@@ -937,6 +940,3 @@ set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins
 
 ## Other Vivado settings
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
-
-
-
