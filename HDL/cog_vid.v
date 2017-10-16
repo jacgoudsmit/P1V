@@ -2,8 +2,6 @@
 
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
-
 This file is part of the hardware description for the Propeller 1 Design.
 
 The Propeller 1 Design is free software: you can redistribute it and/or modify
@@ -49,7 +47,7 @@ output      [31:0]  pin_out
 reg [31:0] vid;
 reg [19:0] scl;
 
-always @(posedge clk_cog)// or negedge ena)
+always @(posedge clk_cog)// or negedge ena) // NOTE: posedge ena happens @ posedge clk_cog
 if (!ena)
     vid <= 32'b0;
 else if (setvid)
@@ -70,34 +68,34 @@ reg [31:0] colors;
 
 wire enable         = |vid[30:29];
 
-wire vclk           = clk_vid;// && enable;
+wire vclk           = clk_vid;
 
 wire new_set        = set == 1'b1;
 wire new_cnt        = cnt == 1'b1;
 
 always @(posedge vclk)
-if (new_set && enable) //ADDED
+if (new_set && enable)
     cnts <= scl[19:12];
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     cnt <= new_set  ? scl[19:12]
          : new_cnt  ? cnts
                     : cnt - 1'b1;
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     set <= new_set  ? scl[11:0]
                     : set - 1'b1;
 
 always @(posedge vclk)
-if ((new_set || new_cnt) && enable) //ADDED
+if ((new_set || new_cnt) && enable)
     pixels <= new_set   ? pixel
             : vid[28]   ? {pixels[31:30], pixels[31:2]}
                         : {pixels[31], pixels[31:1]};
 
 always @(posedge vclk)
-if (new_set && enable) //ADDED
+if (new_set && enable)
     colors <= color;
 
 
@@ -106,10 +104,10 @@ if (new_set && enable) //ADDED
 reg cap;
 reg [1:0] snc;
 
-always @(posedge vclk)// or posedge snc[1])
+always @(posedge vclk)// or posedge snc[1]) // Note: posedge snc[1] happens @ posedge vclk
 if (snc[1])
     cap <= 1'b0;
-else if (new_set && enable) //ADDED
+else if (new_set && enable)
     cap <= 1'b1;
 
 always @(posedge clk_cog)
@@ -126,7 +124,7 @@ reg [7:0] discrete;
 wire [31:0] colorx  = colors >> {vid[28] && pixels[1], pixels[0], 3'b000};
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     discrete <= colorx[7:0];
 
 
@@ -149,7 +147,7 @@ reg [3:0] phase;
 reg [3:0] baseband;
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     phase <= phase + 1'b1;
 
 wire [3:0] colorphs = discrete[7:4] + phase;
@@ -159,7 +157,7 @@ wire [2:0] colormod = discrete[2:0] + { discrete[3] && colorphs[3],
                                         discrete[3] };
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     baseband <= {discrete[3] && colorphs[3], vid[26] ? colormod : discrete[2:0]};
 
 
@@ -181,7 +179,7 @@ if (enable) //ADDED
 reg [2:0] composite;
 
 always @(posedge vclk)
-if (enable) //ADDED
+if (enable)
     composite <= vid[27] ? colormod : discrete[2:0];
 
 wire [15:0][2:0] level  = 48'b011_100_100_101_101_110_110_111_011_011_010_010_001_001_000_000;

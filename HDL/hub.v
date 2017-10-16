@@ -1,8 +1,6 @@
-// hub
-
 /*
 -------------------------------------------------------------------------------
-Copyright 2014 Parallax Inc.
+Hub top level
 
 This file is part of the hardware description for the Propeller 1 Design.
 
@@ -20,6 +18,7 @@ You should have received a copy of the GNU General Public License along with
 the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 -------------------------------------------------------------------------------
 */
+
 
 module              hub
 (

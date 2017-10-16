@@ -47,8 +47,9 @@ parameter           INVERT_COG_LEDS = 0;
 
 wire                clock_160, clk_cog, clk_pll, slow_clk;
 
+
 //
-// Reset
+// Clock generator
 //
 
 
@@ -95,6 +96,24 @@ Debounce sw_debounce (
     .switch_db (switch_db)
 );
 
+
+//
+// Reset
+//
+
+
+reg                 nres;
+
+reset reset_ (
+    .clock_160      (clock_160),
+    .async_res      (~rts | ~reset),
+    .res            (inp_res)
+);
+
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
+
+
 //
 // Propeller Input Bus
 //
@@ -130,8 +149,8 @@ endgenerate
 
 
 dig #(
-            .INVERT_COG_LEDS (INVERT_COG_LEDS),
-            .NUMCOGS    (NUMCOGS)
+    .INVERT_COG_LEDS (INVERT_COG_LEDS),
+    .NUMCOGS        (NUMCOGS)
 ) core (
             .nres       (nres),
             .cfg        (cfg),

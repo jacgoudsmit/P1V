@@ -76,7 +76,7 @@ else if (ena_bus)
 wire [7:0]          bus_r;
 wire [7:0]          bus_e;
 wire [7:0]          bus_w;
-wire [7:0]  [1:0]   bus_s;
+wire [7:0] [1:0]    bus_s;
 wire [7:0] [15:0]   bus_a;
 wire [7:0] [31:0]   bus_d;
 wire [31:0]         bus_q;
@@ -85,7 +85,7 @@ wire [7:0]          bus_ack;
 wire [7:0]          pll;
 wire [7:0] [31:0]   outx;
 wire [7:0] [31:0]   dirx;
-wire [7:0 ]         ptr_w;
+wire [7:0]          ptr_w;
 wire [27:0]         ptr_d;
 wire [7:0]          cog_ena;
 

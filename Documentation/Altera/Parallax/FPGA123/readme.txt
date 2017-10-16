@@ -1,10 +1,10 @@
 To compile the P8X32A hardware description and load it into the Parallax 1-2-3-FPGA (A7):
 
-1) Open Quartus II (You will need version 15 or higher or you won't be able to use the free "web" version with this board).
+1) Open Quartus II (You will need version 15 or higher).
 
 2) File | Open Project...
 
-3) Select 'P1V_Altera.qpf' file from this directory
+3) Select 'P1V_Altera_Cyclone5.qpf' file from the HDL directory
 
 3a) Click Project | Revisions, and make sure the fpga123 revision is the current revision. If not, click on it, then click Set Current. Click OK to close the dialog.
 
