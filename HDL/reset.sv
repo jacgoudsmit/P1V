@@ -38,7 +38,7 @@ assign out_res = |reset_cnt;
 always @(posedge clock_160)
     res <= out_res;
     
-always @(posedge clock_160 or posedge async_res)
+always @(posedge clock_160)
     if (async_res) begin
         reset_cnt <= DELAY_CYCLES;
     end else if (out_res) begin
