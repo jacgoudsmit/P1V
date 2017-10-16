@@ -24,7 +24,6 @@ module              Nexys4
 (
 input  wire         CLK100MHZ,
 output wire  [15:0] ledg,
-//inout  wire  [31:0] pin,
 input  wire  [15:0] switch,
 input  wire         rts,
 input  wire         reset,
@@ -45,7 +44,10 @@ inout  wire         vgaHS, vgaVS
 parameter           NUMCOGS = 8;
 parameter           INVERT_COG_LEDS = 0;
 
-wire                clock_160, clk_cog, clk_pll, slow_clk;
+wire                clock_160;
+wire                clk_cog;
+wire                clk_pll;
+wire                slow_clk;
 
 
 //
@@ -54,23 +56,9 @@ wire                clock_160, clk_cog, clk_pll, slow_clk;
 
 
 wire                inp_res;
-reg                 propplug_reset, usb_reset, nres;
+reg                 propplug_reset;
+reg                 usb_reset;
 wire [7:0]          cfg;                                     // Config register output from Propeller core
-
-reset reset_ (
-    .clock          (slow_clk),
-    .async_res      (~usb_reset | ~reset | ~propplug_reset), // 3 possible active low sources: USB UART, prop plug, or external button push.
-    .res            (inp_res)                                // Combined active high synchronous reset output signal.
-);
-          
-always @(posedge clk_cog)
-    nres <= ~inp_res & !cfg[7];                             // Combine external reset signals with internally generated, make active low.
-
-
-//
-// Clock generator
-//
-
 
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
@@ -105,7 +93,7 @@ Debounce sw_debounce (
 reg                 nres;
 
 reset reset_ (
-    .clock_160      (clock_160),
+    .clock          (slow_clk),
     .async_res      (~rts | ~reset),
     .res            (inp_res)
 );
@@ -115,22 +103,16 @@ always @(posedge clk_cog)
 
 
 //
-// Propeller Input Bus
+// Propeller Input and Output busses
 //
 
 
-reg[31:0] pin_in;
-reg[31:0] pin_in_ext;
-
-
-//
-// Propeller Output Bus and direction register
-//
-
+reg[31:0] pin_in;       // The actual input bus pins of the virtual propeller.
+reg[31:0] pin_in_ext;   // Declaring this extra layer gives us a means to identify the external inputs cleanly at the multiplexer below.
 wire[31:0] pin_out;
 wire[31:0] pin_dir;
 
-// Ensure that pins set to be outputs have their values looped back to the pin input bus without traveling all the way to the IOBUF.
+// Ensure that pins set as outputs have their values looped back to the pin input bus without the routing delay of traveling all the way to the IOBUF at the pad.
 genvar loopback;
 generate
     for (loopback = 0; loopback < 32; loopback++)

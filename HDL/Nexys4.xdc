@@ -940,3 +940,5 @@ set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins
 
 ## Other Vivado settings
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
