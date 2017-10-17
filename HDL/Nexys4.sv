@@ -92,7 +92,9 @@ Debounce sw_debounce (
 
 reg                 nres;
 
-reset reset_ (
+reset #(
+		.DELAY_CYCLES (32'd990); // 50ms at 19.5khz
+) reset_ (
     .clock          (slow_clk),
     .async_res      (~rts | ~reset),
     .res            (inp_res)
@@ -273,27 +275,27 @@ assign PS2Clk = PS2Clk_out;
 assign pmodD[3:0] = pmodD_out[3:0];
 
 always @(switch_db[12], pin_dir[27:24], pin_out[27:24], PS2Data, PS2Clk, pmodD[3:0]) begin
-  if (~switch_db[12]) begin
-    PS2Data_out = pin_dir[24] ? pin_out[24] : 1'bZ;
-    PS2Clk_out  = pin_dir[25] ? pin_out[25] : 1'bZ;
-    pin_in_ext[24] = PS2Data;
-    pin_in_ext[25] = PS2Clk;
-    pin_in_ext[26] = pmodD[2];
-    pin_in_ext[27] = pmodD[3];
-    pmodD_out[1:0] = 2'bZZ;
-    pmodD_out[2] = pin_dir[26] ? pin_out[26] : 1'bZ;
-    pmodD_out[3] = pin_dir[27] ? pin_out[27] : 1'bZ;
-  end else begin
-    PS2Data_out = 1'bZ;
-    PS2Clk_out  = 1'bZ;
-    pin_in_ext[24] = pmodD[0];
-    pin_in_ext[25] = pmodD[1];
-    pin_in_ext[26] = PS2Data;
-    pin_in_ext[27] = PS2Clk;
-    pmodD_out[0] = pin_dir[24] ? pin_out[24] : 1'bZ;
-    pmodD_out[1] = pin_dir[25] ? pin_out[25] : 1'bZ;
-    pmodD_out[3:2] = 2'bZZ;
-  end    
+    if (~switch_db[12]) begin
+        PS2Data_out = pin_dir[24] ? pin_out[24] : 1'bZ;
+        PS2Clk_out  = pin_dir[25] ? pin_out[25] : 1'bZ;
+        pin_in_ext[24] = PS2Data;
+        pin_in_ext[25] = PS2Clk;
+        pin_in_ext[26] = pmodD[2];
+        pin_in_ext[27] = pmodD[3];
+        pmodD_out[1:0] = 2'bZZ;
+        pmodD_out[2] = pin_dir[26] ? pin_out[26] : 1'bZ;
+        pmodD_out[3] = pin_dir[27] ? pin_out[27] : 1'bZ;
+    end else begin
+        PS2Data_out = 1'bZ;
+        PS2Clk_out  = 1'bZ;
+        pin_in_ext[24] = pmodD[0];
+        pin_in_ext[25] = pmodD[1];
+        pin_in_ext[26] = PS2Data;
+        pin_in_ext[27] = PS2Clk;
+        pmodD_out[0] = pin_dir[24] ? pin_out[24] : 1'bZ;
+        pmodD_out[1] = pin_dir[25] ? pin_out[25] : 1'bZ;
+        pmodD_out[3:2] = 2'bZZ;
+    end    
 end
 
 endmodule

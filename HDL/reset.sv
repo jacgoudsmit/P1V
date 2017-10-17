@@ -28,7 +28,7 @@ input               async_res,
 output reg          res
 );
 
-parameter DELAY_CYCLES = 32'd990; // 50ms at 19.5khz
+parameter DELAY_CYCLES = 32'd8_000_000; // 50ms at 160Mhz
 
 reg [31:0]          reset_cnt;
 wire                out_res;
