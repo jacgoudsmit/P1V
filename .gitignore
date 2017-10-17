@@ -28,7 +28,12 @@ hc_output/
 output_files/
 
 # Vivado:
-
+.Xil/**
 *.cache/
 *.hw/
 *.runs/
+*.ioplanning/
+*.sim/
+*.srcs/
+HDL/Vivado.log
+HDL/Vivado.jou

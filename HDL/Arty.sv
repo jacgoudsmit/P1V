@@ -106,7 +106,7 @@ assign led[3] = cogled[8];
 reg nres;
 
 reset reset_ (
-    .clock_160      (clock_160),
+    .clock          (clock_160),
     .async_res      (~ck_rst),
     .res            (inp_res)
 );
