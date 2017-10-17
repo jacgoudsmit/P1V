@@ -93,7 +93,7 @@ Debounce sw_debounce (
 reg                 nres;
 
 reset #(
-	.DELAY_CYCLES (32'd990); // 50ms at 19.5khz
+	.DELAY_CYCLES   (32'd990); // 50ms at 19.5khz
 ) reset_ (
     .clock          (slow_clk),
     .async_res      (~rts | ~reset),
@@ -136,14 +136,14 @@ dig #(
     .INVERT_COG_LEDS (INVERT_COG_LEDS),
     .NUMCOGS        (NUMCOGS)
 ) core (
-    .nres       (nres),
-    .cfg        (cfg),
-    .clk_cog    (clk_cog),
-    .clk_pll    (clk_pll),
-    .pin_in     (pin_in),
-    .pin_out    (pin_out),
-    .pin_dir    (pin_dir),
-    .cog_led    (ledg[7:0])
+    .nres           (nres),
+    .cfg            (cfg),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll),
+    .pin_in         (pin_in),
+    .pin_out        (pin_out),
+    .pin_dir        (pin_dir),
+    .cog_led        (ledg[7:0])
 );
         
 
