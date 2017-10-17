@@ -93,7 +93,7 @@ Debounce sw_debounce (
 reg                 nres;
 
 reset #(
-		.DELAY_CYCLES (32'd990); // 50ms at 19.5khz
+	.DELAY_CYCLES (32'd990); // 50ms at 19.5khz
 ) reset_ (
     .clock          (slow_clk),
     .async_res      (~rts | ~reset),
