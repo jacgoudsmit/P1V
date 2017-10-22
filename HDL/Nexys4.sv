@@ -100,9 +100,6 @@ reset #(
     .res            (inp_res)
 );
 
-always @(posedge clk_cog)
-    nres <= ~inp_res & !cfg[7];
-
 
 //
 // Propeller Input and Output busses
@@ -136,7 +133,7 @@ dig #(
     .INVERT_COG_LEDS (INVERT_COG_LEDS),
     .NUMCOGS        (NUMCOGS)
 ) core (
-    .nres           (nres),
+    .inp_res        (inp_res),
     .cfg            (cfg),
     .clk_cog        (clk_cog),
     .clk_pll        (clk_pll),

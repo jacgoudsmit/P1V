@@ -23,7 +23,7 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 
 module              dig
 (
-input               nres,           // reset input (active low)
+input               inp_res,        // reset input
 
 output       [7:0]  cfg,            // configuration output (set by clkset instruction)
 
@@ -40,6 +40,15 @@ output       [7:0]  cog_led         // led outputs to show which cogs are active
 parameter INVERT_COG_LEDS = 0;
 parameter NUMCOGS = 8;
 
+
+// Reset by CLKSET
+
+reg nres;
+
+always @(posedge clk_cog)
+    nres <= ~inp_res & !cfg[7];
+
+    
 // cnt
 
 reg [31:0] cnt;
