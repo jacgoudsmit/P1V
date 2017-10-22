@@ -85,7 +85,7 @@ wire                res;
 
 // generate a 50ms pulse from the button
 reset reset_ (
-    .clock_160      (clock_160),
+    .clock          (clock_160),
     .async_res      (~KEY[0]),
     .res            (res)
 );

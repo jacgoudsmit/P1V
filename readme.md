@@ -22,6 +22,8 @@ Supported FPGA Boards
 
 The Propeller 1 Design files are structured to run on the following development boards. The ones marked "Limited" have some hardware limitations that make it impossible to emulate the full Propeller. It may be possible that in the future, workarounds can be implemented; for example if there's not enough RAM, it may be possible to modify the implementation to use an external RAM chip.
 
+We welcome pull requests with support for new hardware!
+
 Altera-based targets:
 ---------------------
 
@@ -36,8 +38,6 @@ Xilinx-based targets:
 
 * [Digilent Arty](https://reference.digilentinc.com/reference/programmable-logic/arty/start) (Xilinx Artix-7 35T)
 * [Digilent Nexys4](https://reference.digilentinc.com/reference/programmable-logic/nexys-4/start) (Xilinx Artix-7 100T)
-
-We welcome pull requests with support for new hardware!
 
 Project Structure
 =================
@@ -110,6 +110,7 @@ Also, while English is spoken here, you should keep in mind that not everyone is
 Revision Notes
 ==============
 
+* 2017-10-17 - (Andy Silverman) Added features to the Nexys4 build, to allow using some of the on-board hardware like a Propeller Demo board. Thanks Andy!
 * 2017-10-12 - (Jac Goudsmit) Altera targets split into separate project files; reorganized documentation.
 * 2017-10-11 - (Jac Goudsmit) Modified DE0-Nano to use the "p1v" architecture. Many thanks to Ray Rodrick (Cluso99), Brian Dennis (Ozpropdev), (Tubular), (Blittled), (Heater) for your help! 
 * 2017-09-06 - (Andy Silverman) Added support for Digilent Nexys4 (Artix -7 100T)

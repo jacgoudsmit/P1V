@@ -103,18 +103,13 @@ assign led[3] = cogled[8];
 //
 
 
-reg nres;
-
 reset reset_ (
-    .clock_160      (clock_160),
+    .clock          (clock_160),
     .async_res      (~ck_rst),
     .res            (inp_res)
 );
 
-always @(posedge clk_cog)
-    nres <= ~inp_res & !cfg[7];
-
-assign led3_r = !nres & dim;
+assign led3_r = inp_res & dim;
 
 
 //
@@ -170,7 +165,7 @@ assign jd[7] = ftdi_propplug ? uart_txd_in : 1'bZ;
 dig #(
     .NUMCOGS        (NUMCOGS)
 ) core (
-    .nres           (nres),
+    .inp_res        (inp_res),
     .cfg            (cfg),
     .clk_cog        (clk_cog),
     .clk_pll        (clk_pll),
