@@ -117,12 +117,12 @@ set_property IOSTANDARD LVCMOS33 [get_ports {ledg[15]}]
 #Bank = 34, Pin name = IO_L5P_T0_34,                        Sch name = LED16_R
 #set_property PACKAGE_PIN K5 [get_ports {pin[16]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {pin[16]}]
-##Bank = 15, Pin name = IO_L5P_T0_AD9P_15,                  Sch name = LED16_G
-#set_property PACKAGE_PIN F13 [get_ports {pin[17]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {pin[17]}]
-##Bank = 35, Pin name = IO_L19N_T3_VREF_35,                 Sch name = LED16_B
-#set_property PACKAGE_PIN F6 [get_ports {pin[18]}]
-#set_property IOSTANDARD LVCMOS33 [get_ports {pin[18]}]
+#Bank = 15, Pin name = IO_L5P_T0_AD9P_15,                  Sch name = LED16_G
+set_property PACKAGE_PIN F13 [get_ports {ledrgb_g1}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ledrgb_g1}]
+#Bank = 35, Pin name = IO_L19N_T3_VREF_35,                 Sch name = LED16_B
+set_property PACKAGE_PIN F6 [get_ports {ledrgb_b1}]
+set_property IOSTANDARD LVCMOS33 [get_ports {ledrgb_b1}]
 ##Bank = 34, Pin name = IO_0_34,                            Sch name = LED17_R
 #set_property PACKAGE_PIN K6 [get_ports {pin[19]}]
 #set_property IOSTANDARD LVCMOS33 [get_ports {pin[19]}]
@@ -941,4 +941,4 @@ set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins
 ## Other Vivado settings
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
 set_property BITSTREAM.CONFIG.SPI_BUSWIDTH 4 [current_design]
-set_property BITSTREAM.CONFIG.CONFIGRATE 33 [current_design]
+set_property BITSTREAM.CONFIG.CONFIGRATE 66 [current_design]
