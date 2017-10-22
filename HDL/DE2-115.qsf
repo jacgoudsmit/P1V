@@ -19,7 +19,7 @@
 #
 # Quartus Prime
 # Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
-# Date created = 23:22:23  September 23, 2017
+# Date created = 16:23:05  October 22, 2017
 #
 # -------------------------------------------------------------------------- #
 #
@@ -57,6 +57,7 @@ set_global_assignment -name VERILOG_FILE cog_ctr.v
 set_global_assignment -name VERILOG_FILE cog_alu.v
 set_global_assignment -name VERILOG_FILE cog.v
 set_global_assignment -name VERILOG_FILE altera.v
+set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 
 # Pin & Location Assignments
 # ==========================
