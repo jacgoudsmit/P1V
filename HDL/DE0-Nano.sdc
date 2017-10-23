@@ -26,24 +26,24 @@ derive_pll_clocks
 # Generated automatically by derive_pll_clocks
 # create_generated_clock -source {altera_|pll|auto_generated|pll1|inclk[0]} -divide_by 5 -multiply_by 16 -duty_cycle 50.00 -name {altera_|pll|auto_generated|pll1|clk[0]} {altera_|pll|auto_generated|pll1|clk[0]}
 
-create_generated_clock -name cog_clk -source [get_pins {altera_|pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers { p1v:p1v_|tim:clkgen|divide[12] }]
+create_generated_clock -name cog_clk -source [get_pins {altera_|pll|auto_generated|pll1|clk[0]}] -divide_by 2 [get_registers {altera_|divide[12]}]
 
-create_generated_clock -name pll0a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll0b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[0].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll1a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll1b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[1].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll2a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll2b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[2].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll3a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll3b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[3].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll4a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll4b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[4].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll5a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll5b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[5].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll6a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll6b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[6].cog_|cog_ctr:cog_ctrb|pll
-create_generated_clock -name pll7a -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctra|pll
-create_generated_clock -name pll7b -source [get_nets {p1v_|clkgen|clk_pll}] -divide_by 2 p1v:p1v_|dig:core|cog:coggen[7].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll0a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[0].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll0b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[0].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll1a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[1].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll1b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[1].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll2a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[2].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll2b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[2].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll3a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[3].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll3b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[3].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll4a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[4].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll4b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[4].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll5a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[5].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll5b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[5].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll6a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[6].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll6b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[6].cog_|cog_ctr:cog_ctrb|pll
+create_generated_clock -name pll7a -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[7].cog_|cog_ctr:cog_ctra|pll
+create_generated_clock -name pll7b -source [get_nets {altera_|clk_pll}] -divide_by 2 core|coggen[7].cog_|cog_ctr:cog_ctrb|pll
 
 #**************************************************************
 # Set Clock Latency
