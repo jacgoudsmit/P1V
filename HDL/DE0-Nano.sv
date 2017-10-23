@@ -20,7 +20,7 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-module              DE0Nano
+module              top
 (
 
 input               CLOCK_50,
@@ -39,12 +39,12 @@ inout        [33:0] GPIO1               // Bottom header
 //
 
 
-wire                pin_resn;
-wire         [31:0] pin_in;
-wire         [31:0] pin_out;
-wire         [31:0] pin_dir;
+wire                pin_resn;           // Reset (active low) from Prop plug
+wire         [31:0] pin_in;             // Input pins (to core)
+wire         [31:0] pin_out;            // Output pins (from core)
+wire         [31:0] pin_dir;            // Directions (from core)
 
-// I/O pins except 31 and 30
+// Map I/O pins except 31 and 30
 genvar i;
 generate
     for (i = 0; i < 30; i++)
@@ -67,11 +67,25 @@ assign GPIO0[29]    = pin_dir[30] ? pin_out[30] : 1'bZ;
 //
 
 
-wire clock_160;
+wire                clock_160;          // 160MHz straight from PLL
+wire          [7:0] cfg;                // Clock configuration from core
+wire                clk_cog;            // Cog clock based on cfg, max 80MHz
+wire                clk_pll;            // 2 x clk_cog based on cfg, max 160MHz
+wire                res;                // Synchronous 50ms reset pulse
 
-altera altera_(
-    .clock_50 (CLOCK_50),
-    .clock_160 (clock_160)
+altera_clock #(
+    .IN_PERIOD_PS   (20000),
+    .PLL_MUL        (16),
+    .PLL_DIV        (5)
+)
+altera_
+(
+    .clock          (CLOCK_50),         // Crystal oscillator on the board
+    .cfg            (cfg[6:0]),         // Clock config registers from core
+    .res            (res),              // Synchronous 50ms reset pulse
+    .clk_pll        (clk_pll),          // clock for cog PLL's
+    .clk_cog        (clk_cog),          // clock for instruction execution
+    .clock_160      (clock_160)         // Fixed frequency 160MHz clock
 );
 
 
@@ -80,10 +94,9 @@ altera altera_(
 //
 
 
-wire                inp_resn;
-wire                res;
+wire                inp_res;
 
-// generate a 50ms pulse from the button
+// generate a 50ms pulse from the button. The output is synchronized with the clock.
 reset reset_ (
     .clock          (clock_160),
     .async_res      (~KEY[0]),
@@ -92,8 +105,8 @@ reset reset_ (
 
 // The reset that comes from the reset pin doesn't have to be
 // extended or debounced; the Prop Plug takes care of that.
-// Mix the reset input for the P1V here.
-assign inp_resn = !res & pin_resn;
+// Mix the reset input pin with the synchronized reset from the reset module.
+assign inp_res = res | ~pin_resn;
 
 
 //
@@ -101,13 +114,15 @@ assign inp_resn = !res & pin_resn;
 //
 
 
-p1v p1v_(
-    .clock_160      (clock_160),
-    .inp_resn       (inp_resn),
-    .ledg           (LED),
-    .pin_out        (pin_out),
+dig core (
+    .inp_res        (inp_res),
+    .cfg            (cfg),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll),
     .pin_in         (pin_in),
-    .pin_dir        (pin_dir)
+    .pin_out        (pin_out),
+    .pin_dir        (pin_dir),
+    .cog_led        (LED)
 );
 
 
