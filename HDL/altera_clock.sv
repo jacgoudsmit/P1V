@@ -51,8 +51,8 @@ altpll #(
 )
 pll
 (
-    .inclk({1'b0, clock}),
-    .clk({_dummy_clk, clock_160})
+    .inclk                  ({1'b0, clock}),
+    .clk                    ({_dummy_clk, clock_160})
 );
 
 

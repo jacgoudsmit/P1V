@@ -1,6 +1,6 @@
 /*
 -------------------------------------------------------------------------------
-DE0-Nano Top Level File
+DE2-115 Top Level File
 
 This file is part of the hardware description for the Propeller 1 Design.
 
