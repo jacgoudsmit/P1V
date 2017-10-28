@@ -78,7 +78,7 @@ tim clkgen( .clk        (clock_160),
 // Propeller 1 core module
 //
 
-dig core (  .nres       (nres),
+dig core (  .inp_res    (~inp_resn),
             .cfg        (cfg),
             .clk_cog    (clk_cog),
             .clk_pll    (clk_pll),
@@ -87,8 +87,6 @@ dig core (  .nres       (nres),
             .pin_dir    (pin_dir),
             .cog_led    (ledg) );
 
-always @ (posedge clk_cog)
-    nres <= inp_resn & !cfg[7];
 
 //
 // Bidir I/O buffers

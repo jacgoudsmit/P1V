@@ -935,8 +935,8 @@ set_clock_groups -asynchronous -group [get_clocks clk_pll_o] -group [get_clocks 
 # Video clocks are also asynchronous with the primary cog clocks, since they are based on the PLLA outputs.
 set_clock_groups -asynchronous -group [get_clocks vclk*] -group [get_clocks {pllX* rcslow}]
 # Another slow-clock timing issue: reset output is always at least 50ms pulse
-set_multicycle_path -setup -start -from [get_pins reset_/res_reg/C] -to [get_pins nres_reg/D] 2
-set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins nres_reg/D] 1
+set_multicycle_path -setup -start -from [get_pins reset_/res_reg/C] -to [get_pins core/nres_reg/D] 2
+set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins core/nres_reg/D] 1
 
 ## Other Vivado settings
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]

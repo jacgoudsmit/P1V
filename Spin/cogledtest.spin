@@ -2,7 +2,10 @@
 '
 ' Starts each cog in succession, to verify that the cogs and LEDs are working on the P1V.
 
-
+con
+  _clkmode = xinput + pll16x
+  _clkfreq = 80_000_000
+  
 pub Start | i
 
 repeat
@@ -12,8 +15,7 @@ repeat
 
   repeat i from 1 to 7
     cogstop(i)
-
-  waitcnt(10_000_000 + cnt)
+    waitcnt(10_000_000 + cnt)
 
 pub donothing
 
