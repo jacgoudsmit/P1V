@@ -87,9 +87,6 @@ assign io = pin_dir[n] ? pin_out[n] : 1'bZ;
 assign pin_resn = J1C[32];
 assign J1C[32] = 1'bZ;
 
-// unused pins
-assign J1C[40:38] = 3'bZZZ;
-
 
 //
 // Clock generator for Altera FPGA's
