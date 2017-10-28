@@ -13,11 +13,13 @@
 			<sof_filename>D:/GitHub/P1V/HDL/output_files/BeMicroCV-A9.sof</sof_filename> 
 		</bit0>
 	</sof_data>
-	<version>8</version>
+	<version>10</version>
 	<create_cvp_file>0</create_cvp_file>
 	<create_hps_iocsr>0</create_hps_iocsr>
 	<auto_create_rpd>0</auto_create_rpd>
+	<rpd_little_endian>1</rpd_little_endian>
 	<options>
+		<map_file>0</map_file>
 	</options>
 	<advanced_options>
 		<ignore_epcs_id_check>0</ignore_epcs_id_check>
