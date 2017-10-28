@@ -32,7 +32,6 @@ output      [31:0]  pin_dir,
 output       [7:0]  ledg                // "cog active" leds
 );
 
-parameter           INVERT_COG_LEDS = 0;
 parameter           NUMCOGS = 8;
 
 
@@ -61,7 +60,6 @@ tim clkgen( .clk        (clock_160),
 //
 
 dig #(
-            .INVERT_COG_LEDS (INVERT_COG_LEDS),
             .NUMCOGS    (NUMCOGS)
 ) core (
             .inp_res    (~inp_resn),

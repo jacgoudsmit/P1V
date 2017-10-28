@@ -31,7 +31,6 @@ inout       [31:0]  io,                 // i/o pins
 output       [7:0]  ledg                // cog leds
 );
 
-`include "features.v"
 
 //
 // reg and wire declarations

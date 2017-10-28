@@ -42,7 +42,6 @@ inout  wire         vgaHS, vgaVS
 );
 
 parameter           NUMCOGS = 8;
-parameter           INVERT_COG_LEDS = 0;
 
 wire                clock_160;
 wire                clk_cog;
@@ -130,7 +129,6 @@ endgenerate
 
 
 dig #(
-    .INVERT_COG_LEDS (INVERT_COG_LEDS),
     .NUMCOGS        (NUMCOGS)
 ) core (
     .inp_res        (inp_res),

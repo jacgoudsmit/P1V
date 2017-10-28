@@ -37,7 +37,6 @@ output      [31:0]  pin_dir,        // pin direction outputs
 output       [7:0]  cog_led         // led outputs to show which cogs are active
 );
 
-parameter INVERT_COG_LEDS = 0;
 parameter NUMCOGS = 8;
 
 
@@ -175,6 +174,6 @@ assign pin_dir      = dirx[7] | dirx[6] | dirx[5] | dirx[4] | dirx[3] | dirx[2] 
 
 // cog leds
 
-assign cog_led      = cog_ena ^ { 8{|INVERT_COG_LEDS} };
+assign cog_led      = cog_ena;
 
 endmodule
