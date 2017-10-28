@@ -1,7 +1,6 @@
-// Top-level module for BeMicroCV-A9
-
 /*
 -------------------------------------------------------------------------------
+BeMicroCV-A9 Top-level module
 
 This file is part of the hardware description for the Propeller 1 Design.
 
@@ -21,145 +20,145 @@ the Propeller 1 Design.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 
-module              bemicrocva9
+module              top
 (
 
-input               DDR3_CLK_50MHZ,
-input               CLK_24MHZ,
-output wire   [8:1] USER_LED,
-input         [4:1] DIP_SW,
-input         [2:1] TACT,
+input               DDR3_CLK_50MHZ,     // 50MHz crystal oscillator
+output        [8:1] USER_LED_N,         // LEDs, active low
+input         [1:1] TACT_N,             // Tactile switch, active low
 
-inout wire   [40:1] J1
-//inout wire   [40:1] J2,
-//inout wire   [80:1] J4
+                    // J1
+inout        [10:2] J1A,
+inout       [18:13] J1B,
+inout       [28:21] J1C,
+inout       [40:31] J1D
 
 );
 
-//
-// Reset can come from Prop plug or tactile switch
-//
-
-wire resn;
-
-assign resn = TACT[1] & J1[32];
 
 //
-// The LEDs are on when set to 0, so we reverse the cog led outputs here
+// Map the Propeller pins to match the picture in the documentation
 //
 
-wire[8:1] cogled;
-assign USER_LED = ~cogled;
 
-//
-// Inputs
-//
+wire                pin_resn;           // Reset (active low) from Prop plug
+wire         [31:0] pin_in;             // Input pins
+wire         [31:0] pin_out;            // Output pins (from core)
+wire         [31:0] pin_dir;            // Directions (from core)
 
-wire[31:0] pin_in = 
-{
-    J1[34],
-    J1[36],
-    J1[38],
-    J1[40],
-    J1[39],
-    J1[37],
-    J1[35],
-    J1[33],
-    
-    J1[31],
-    J1[28],
-    J1[27],
-    J1[26],
-    J1[25],
-    J1[24],
-    J1[23],
-    J1[22],
-    
-    J1[21],
-    J1[18],
-    J1[17],
-    J1[16],
-    J1[15],
-    J1[14],
-    J1[13],
-    J1[10],
-    
-    J1[9],
-    J1[8],
-    J1[7],
-    J1[6],
-    J1[5],
-    J1[4],
-    J1[3],
-    J1[2]
-};
+// Map I/O pins
+`define map(n, io) \
+assign pin_in[n] = io; \
+assign io = pin_dir[n] ? pin_out[n] : 1'bZ;
 
-wire[31:0] pin_out;
-wire[31:0] pin_dir;
+`map( 0, J1A[ 2])
+`map( 1, J1A[ 3])
+`map( 2, J1A[ 4])
+`map( 3, J1A[ 5])
+`map( 4, J1A[ 6])
+`map( 5, J1A[ 7])
+`map( 6, J1A[ 8])
+`map( 7, J1A[ 9])
+`map( 8, J1A[10])
+`map( 9, J1B[13])
+`map(10, J1B[14])
+`map(11, J1B[15])
+`map(12, J1B[16])
+`map(13, J1B[17])
+`map(14, J1B[18])
+`map(15, J1C[21])
+`map(16, J1C[22])
+`map(17, J1C[23])
+`map(18, J1C[24])
+`map(19, J1C[25])
+`map(20, J1C[26])
+`map(21, J1C[27])
+`map(22, J1C[28])
+`map(23, J1D[31])
+`map(24, J1D[33])
+`map(25, J1D[35])
+`map(26, J1D[37])
+`map(27, J1D[39])
+`map(28, J1D[40])
+`map(29, J1D[38])
+`map(30, J1D[36])
+`map(31, J1D[34])
 
-//
-// Outputs
-//
+// reset-pin
+assign pin_resn = J1D[32];
+assign J1D[32] = 1'bZ;
 
-`define DIROUT(x) (pin_dir[x] ? pin_out[x] : 1'bZ)
-assign J1[34] = `DIROUT(31);
-assign J1[36] = `DIROUT(30);
-assign J1[38] = `DIROUT(29);
-assign J1[40] = `DIROUT(28);
-assign J1[39] = `DIROUT(27);
-assign J1[37] = `DIROUT(26);
-assign J1[35] = `DIROUT(25);
-assign J1[33] = `DIROUT(24);
-    
-assign J1[31] = `DIROUT(23);
-assign J1[28] = `DIROUT(22);
-assign J1[27] = `DIROUT(21);
-assign J1[26] = `DIROUT(20);
-assign J1[25] = `DIROUT(19);
-assign J1[24] = `DIROUT(18);
-assign J1[23] = `DIROUT(17);
-assign J1[22] = `DIROUT(16);
-    
-assign J1[21] = `DIROUT(15);
-assign J1[18] = `DIROUT(14);
-assign J1[17] = `DIROUT(13);
-assign J1[16] = `DIROUT(12);
-assign J1[15] = `DIROUT(11);
-assign J1[14] = `DIROUT(10);
-assign J1[13] = `DIROUT(9);
-assign J1[10] = `DIROUT(8);
-
-assign J1[9] = `DIROUT(7);
-assign J1[8] = `DIROUT(6);
-assign J1[7] = `DIROUT(5);
-assign J1[6] = `DIROUT(4);
-assign J1[5] = `DIROUT(3);
-assign J1[4] = `DIROUT(2);
-assign J1[3] = `DIROUT(1);
-assign J1[2] = `DIROUT(0);
 
 //
 // Clock generator for Altera FPGA's
 //
 
-wire clock_160;
 
-altera altera_(
-    .clock_50 (DDR3_CLK_50MHZ),
-    .clock_160 (clock_160)
+wire                clock_160;          // 160MHz straight from PLL
+wire          [7:0] cfg;                // Clock configuration from core
+wire                clk_cog;            // Cog clock based on cfg, max 80MHz
+wire                clk_pll;            // 2 x clk_cog based on cfg, max 160MHz
+wire                res;                // Synchronous 50ms reset pulse
+
+altera_clock #(
+    .IN_PERIOD_PS   (20000),
+    .PLL_MUL        (16),
+    .PLL_DIV        (5)
+)
+altera_
+(
+    .clock          (DDR3_CLK_50MHZ),    // Crystal oscillator on the board
+    .cfg            (cfg[6:0]),         // Clock config registers from core
+    .res            (res),              // Synchronous 50ms reset pulse
+    .clk_pll        (clk_pll),          // clock for cog PLL's
+    .clk_cog        (clk_cog),          // clock for instruction execution
+    .clock_160      (clock_160)         // Fixed frequency 160MHz clock
 );
+
+
+//
+// Reset
+//
+
+
+wire                inp_res;
+
+// generate a 50ms pulse from the button. The output is synchronized with the clock.
+reset reset_ (
+    .clock          (clock_160),
+    .async_res      (~TACT_N[1] | ~pin_resn),
+    .res            (res)
+);
+
+// Mix the reset input pin with the synchronized reset from the reset module.
+assign inp_res = res;// | ~pin_resn;
+
+
+//
+// The LEDs are on when set to 0, so we reverse the cog led outputs here
+//
+
+
+wire[8:1] cog_led;
+
+assign USER_LED_N = ~cog_led;
+
 
 //
 // Virtual Propeller
 //
 
-p1v p1v_(
-    .clock_160 (clock_160),
-    .inp_resn (resn),
-    .ledg (cogled[8:1]),
-    .pin_out (pin_out),
-    .pin_in (pin_in),
-    .pin_dir (pin_dir)
+
+dig core (
+    .inp_res        (inp_res),
+    .cfg            (cfg),
+    .clk_cog        (clk_cog),
+    .clk_pll        (clk_pll),
+    .pin_in         (pin_in),
+    .pin_out        (pin_out),
+    .pin_dir        (pin_dir),
+    .cog_led        (cog_led)
 );
+
 
 endmodule
