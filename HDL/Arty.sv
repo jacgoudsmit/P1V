@@ -59,6 +59,8 @@ wire [7:0]          cfg;
 wire                clock_160;
 wire                clk_cog;
 wire                clk_pll;
+wire                slow_clk;
+
 xilinx_clock #(
     .IN_PERIOD_NS   (10.0),
     .CLK_MULTIPLY   (64),
@@ -69,7 +71,8 @@ xilinx_clock #(
     .res            (inp_res),
     .clock_160      (clock_160),
     .clk_cog        (clk_cog),
-    .clk_pll        (clk_pll)   
+    .clk_pll        (clk_pll),   
+    .slow_clk       (slow_clk)  
 );
 
 
@@ -79,7 +82,7 @@ xilinx_clock #(
 
 
 reg[2:0] ledpwm;
-always @(posedge clock_160)
+always @(posedge slow_clk)
 begin
   ledpwm = ledpwm + 1;
 end
@@ -103,8 +106,10 @@ assign led[3] = cogled[8];
 //
 
 
-reset reset_ (
-    .clock          (clock_160),
+reset #(
+    .DELAY_CYCLES   (32'd990) // 50ms at 19.5khz
+) reset_ (
+    .clock          (slow_clk),
     .async_res      (~ck_rst),
     .res            (inp_res)
 );

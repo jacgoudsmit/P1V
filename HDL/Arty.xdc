@@ -8,6 +8,9 @@
 ## - uncomment the lines corresponding to used pins
 ## - rename the used ports (in each line, after get_ports) according to the top level signal names in the project
 
+set_property CFGBVS VCCO [current_design]
+set_property CONFIG_VOLTAGE 3.3 [current_design]
+
 ## Clock signal
 
 set_property -dict { PACKAGE_PIN E3    IOSTANDARD LVCMOS33 } [get_ports { CLK100MHZ }]; #IO_L12P_T1_MRCC_35 Sch=gclk[100]
@@ -241,15 +244,16 @@ create_generated_clock -name rcslow -source [get_pins xilinx_clock_/genclock/CLK
 # Tell the timing analyzer that the various clock modes of the prop (<= 80Mhz) cannot all be in use at the same time, don't waste timing checking for those interactions.
 set_clock_groups -name clkpll_taps -logically_exclusive -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT5]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT4]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT3]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT2]]] -group [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]] -group [get_clocks rcslow]
 
-# The reset module generates a 50ms pulse when a reset signal is received and goes from a fixed fast 160Mhz circuit, which is
-# captured using the cog clock, which is potentially as slow as the 20KHz CPU.  Need to tell the timing analyzer that it's OK
-# for it to take a LOT of (fast) clock cycles to capture this data when using the slow clock.
-set_multicycle_path -setup -start -from [get_clocks clock_160_o] -to [get_clocks rcslow] 8192
-set_multicycle_path -hold -start -from [get_clocks clock_160_o] -to [get_clocks rcslow] 8191
-
 # PLLs can run up to 128Mhz per spec and so CLKOUT6 is set to generate 128MHz.
 # Each tap is logically exclusive (cannot be selected at the same time as) the others on the same PLL, so we don't want timing analysis to waste effort looking for interactions.
 # Further, all PLL logic trees need to be treated as asynchronous from each other and the rest of the design.
+
+# Input and output delay
+set_output_delay -clock [get_clocks *rcslow*] 0.000 [get_ports -filter {NAME =~  "led*"}]
+set_input_delay -clock [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]] 0.000 [get_ports ja]
+set_input_delay -clock [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]] 0.000 [get_ports jb]
+set_input_delay -clock [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]] 0.000 [get_ports jc]
+set_input_delay -clock [get_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]] 0.000 [get_ports jd]
 
 ## PLLA (i.e. CTRA), 8 taps, per cog.
 create_generated_clock -name plla0_1 -source [get_pins xilinx_clock_/genclock/CLKOUT6] -divide_by 128 [get_pins {core/coggen[0].cog_/cog_ctra/pll_fake_reg[35]/Q}]
@@ -414,7 +418,7 @@ create_generated_clock -name pllb7_8 -source [get_pins xilinx_clock_/genclock/CL
 set_clock_groups -name pllb7_exclusive -logically_exclusive -group [get_clocks pllb7_1] -group [get_clocks pllb7_2] -group [get_clocks pllb7_3] -group [get_clocks pllb7_4] -group [get_clocks pllb7_5] -group [get_clocks pllb7_6] -group [get_clocks pllb7_7] -group [get_clocks pllb7_8]
 
 # Make PLL trees asynchronous from cogs - 1st group is "everything else", 2nd group is "all clocks derived from clk_pll"
-set_clock_groups -name async_clks -asynchronous -group [get_clocks [list sys_clk_pin rcslow [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKFBOUT]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT0]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT5]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT4]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT3]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT2]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]]] -group [get_clocks -include_generated_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT6]]]
+set_clock_groups -name async_clks -asynchronous -group [get_clocks [list sys_clk_pin rcslow [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKFBOUT]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT5]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT4]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT3]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT2]] [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT1]]]] -group [get_clocks -include_generated_clocks [get_clocks -of_objects [get_pins xilinx_clock_/genclock/CLKOUT6]]]
 
 # Video clock in each cog is generated based on the PLL output of CTRA.
 create_generated_clock -name vclk0 -source [get_pins xilinx_clock_/genclock/CLKOUT6] -divide_by 1 [get_pins {core/coggen[0].cog_/cog_ctra/pll_reg/Q}]
@@ -427,11 +431,15 @@ create_generated_clock -name vclk6 -source [get_pins xilinx_clock_/genclock/CLKO
 create_generated_clock -name vclk7 -source [get_pins xilinx_clock_/genclock/CLKOUT6] -divide_by 1 [get_pins {core/coggen[7].cog_/cog_ctra/pll_reg/Q}]
 
 # Logic derived from the pseudo-PLL clock is asynchronous from the primary cog clocks as well.
-set_clock_groups -asynchronous -group [get_clocks clk_pll_o] -group [get_clocks {pllX* rcslow clock_160_o}]
+set_clock_groups -asynchronous -group [get_clocks clk_pll_o] -group [get_clocks {pllX* rcslow}]
 # Video clocks are also asynchronous with the primary cog clocks, since they are based on the PLLA outputs.
-set_clock_groups -asynchronous -group [get_clocks vclk*] -group [get_clocks {pllX* rcslow clock_160_o}]
-
+set_clock_groups -asynchronous -group [get_clocks vclk*] -group [get_clocks {pllX* rcslow}]
+# Another slow-clock timing issue: reset output is always at least 50ms pulse
+set_multicycle_path -setup -start -from [get_pins reset_/res_reg/C] -to [get_pins core/nres_reg/D] 2
+set_multicycle_path -hold -start -from [get_pins reset_/res_reg/C] -to [get_pins core/nres_reg/D] 1
 
 ## Other Vivado settings
 
 set_property BITSTREAM.GENERAL.COMPRESS TRUE [current_design]
+
+
