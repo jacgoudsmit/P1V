@@ -38,7 +38,9 @@ inout  wire   [7:0] pmodB,
 inout  wire   [7:0] pmodC,
 inout  wire   [7:0] pmodD,
 inout  wire   [1:0] vgaRed, vgaBlue, vgaGr,
-inout  wire         vgaHS, vgaVS
+inout  wire         vgaHS, vgaVS,
+output wire         ledrgb_g1,
+output wire         ledrgb_b1
 );
 
 parameter           NUMCOGS = 8;
@@ -182,6 +184,8 @@ assign pmodD[7] = pin_dir[28] ? pin_out[28] : 1'bZ;    // pmodD[7] always used a
 assign pmodD[6] = pin_dir[29] ? pin_out[29] : 1'bZ;    // pmodD[6] always used as pin 29 (SDA) to accomodate external EEPROM 
 assign pin_in_ext[29] = pmodD[6];                      // pin 29 gets input from pmodD[6] for I2C bus
 assign pin_in_ext[28] = pmodD[7];                      // pin 28 gets input from pmodD[7] for I2C bus
+assign ledrgb_g1 = pin_dir[29] ? ~pin_out[29] : 1'b0;  // Light one of the RGB LEDs green when there's data write activity on the I2C bus (gnd)
+assign ledrgb_b1 = pin_dir[29] ? 1'b0 : ~pin_in[29];   // Light it blue when there's data read activity instead the I2C bus
 
 always @(switch_db[15], uartTX, pin_out[31:29], pin_dir[31:29], pmodD[3:1], rts) begin
     if (~switch_db[15]) begin

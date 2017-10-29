@@ -45,7 +45,7 @@ parameter NUMCOGS = 8;
 reg nres;
 
 always @(posedge clk_cog)
-    nres <= ~inp_res & !cfg[7];
+    nres <= ~inp_res & ~cfg[7];
 
     
 // cnt
