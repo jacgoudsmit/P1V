@@ -19,15 +19,16 @@
 #
 # Quartus Prime
 # Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
-# Date created = 23:26:45  September 23, 2017
+# Date created = 20:54:30  October 28, 2017
 #
 # -------------------------------------------------------------------------- #
 
 QUARTUS_VERSION = "17.0"
-DATE = "23:26:45  September 23, 2017"
+DATE = "20:54:30  October 28, 2017"
 
 # Revisions
 
 PROJECT_REVISION = "BeMicroCV"
 PROJECT_REVISION = "BeMicroCV-A9"
 PROJECT_REVISION = "fpga123-A7"
+PROJECT_REVISION = "fpga123-A9"

@@ -22,7 +22,7 @@ Supported FPGA Boards
 
 The Propeller 1 Design files are structured to run on the following development boards. The ones marked "Limited" have some hardware limitations that make it impossible to emulate the full Propeller. It may be possible that in the future, workarounds can be implemented; for example if there's not enough RAM, it may be possible to modify the implementation to use an external RAM chip.
 
-We welcome pull requests with support for new hardware!
+We welcome submissions with support for new hardware! Github pull-requests are preferred, but if you post in the Parallax forums with "P1V" in the subject, you'll get our attention too. 
 
 Altera-based targets:
 ---------------------
@@ -31,7 +31,7 @@ Altera-based targets:
 * [Terasic DE0-Nano](http://www.parallax.com/product/60056) (Altera Cyclone IV) *LIMITED*
 * [Arrow BeMicro CV](https://parts.arrow.com/item/detail/arrow-development-tools/bemicrocv) (Altera Cyclone V)
 * [Arrow BeMicro CV-A9](http://www.alterawiki.com/wiki/BeMicro_CV_A9) (Altera Cyclone V)
-* [Parallax 1-2-3 Board (A7)](http://forums.parallax.com/discussion/161545) (Altera Cyclone V)
+* [Parallax 1-2-3 Board (A7 and A9 versions)](http://forums.parallax.com/discussion/161545) (Altera Cyclone V)
 
 Xilinx-based targets:
 ---------------------
@@ -46,7 +46,7 @@ The HDL directory contains all the files you need to turn your supported FPGA bo
 
 These are the most important files, the hierarchy of relationships, and the functions of each module:
 
-* altera.v: Master clock generator for Altera targets
+* altera_clock.sv: Master clock generator for Altera targets
 * xilinx_clock.sv: Master clock generator for Xilinx targets
 * reset.sv: Generates synchronous reset from asynchronous input
 * dig.v: Top level module of the actual Propeller
@@ -57,8 +57,6 @@ These are the most important files, the hierarchy of relationships, and the func
      * cog_ctr.v: Counters/timers (instantiated 2x per cog)
      * cog_ram.v: Cog RAM
      * cog_vid.v: Video logic
-
-(Note: the organization of the modules is currently changing to the architecture of this hierarchy; not all targets may work this way yet).
  
 By default, the emulated P8X32A will behave exactly like a real Propeller chip with a 5MHz crystal connected to the XI pin. This allows normal 80MHz operation when PLL16X is used. You can program the 'chip' via any Propeller development software (like Propeller Tool, PropellerIDE, or SimpleIDE) by plugging a [Prop Plug](http://www.parallax.com/product/32201) onto the pins as described in the readme.txt for your board. On some boards, the onboard USB serial connection substitutes for the Prop Plug so no additional hardware is necessary.
 
@@ -110,6 +108,8 @@ Also, while English is spoken here, you should keep in mind that not everyone is
 Revision Notes
 ==============
 
+* 2017-10-28 - (Jac Goudsmit) Added Parallax FPGA-123 (A9) target.
+* 2017-10-28 - (Jac Goudsmit) Modified all targets to use Chip Gracey's original "dig.v" architecture.
 * 2017-10-17 - (Andy Silverman) Added features to the Nexys4 build, to allow using some of the on-board hardware like a Propeller Demo board. Thanks Andy!
 * 2017-10-12 - (Jac Goudsmit) Altera targets split into separate project files; reorganized documentation.
 * 2017-10-11 - (Jac Goudsmit) Modified DE0-Nano to use the "p1v" architecture. Many thanks to Ray Rodrick (Cluso99), Brian Dennis (Ozpropdev), (Tubular), (Blittled), (Heater) for your help! 
