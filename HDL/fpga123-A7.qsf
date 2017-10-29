@@ -19,7 +19,7 @@
 #
 # Quartus Prime
 # Version 17.0.2 Build 602 07/19/2017 SJ Lite Edition
-# Date created = 17:19:16  October 28, 2017
+# Date created = 20:54:43  October 28, 2017
 #
 # -------------------------------------------------------------------------- #
 #
@@ -47,7 +47,7 @@ set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name SYSTEMVERILOG_FILE altera_clock.sv
-set_global_assignment -name SYSTEMVERILOG_FILE fpga123.sv
+set_global_assignment -name SYSTEMVERILOG_FILE "fpga123-A7.sv"
 set_global_assignment -name SYSTEMVERILOG_FILE reset.sv
 set_global_assignment -name SYSTEMVERILOG_FILE hub_mem.v
 set_global_assignment -name SYSTEMVERILOG_FILE hub.v
@@ -401,12 +401,6 @@ set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_NEAR_END_VMEAS "HALF VCCIO" -fall
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -rise
 set_global_assignment -name OUTPUT_IO_TIMING_FAR_END_VMEAS "HALF SIGNAL SWING" -fall
-
-# ---------------------
-# start ENTITY(fpga123)
-
-# end ENTITY(fpga123)
-# -------------------
 
 # -----------------
 # start ENTITY(top)
