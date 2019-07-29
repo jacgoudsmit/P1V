@@ -35,5 +35,6 @@ output_files/
 *.ioplanning/
 *.sim/
 *.srcs/
-HDL/Vivado.log
-HDL/Vivado.jou
+HDL/Vivado*.log
+HDL/Vivado*.jou
+HDL/Vivado*.str
