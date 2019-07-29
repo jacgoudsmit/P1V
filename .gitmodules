@@ -1,0 +1,4 @@
+[submodule "vivado-boards"]
+	path = vivado-boards
+	url = https://github.com/Digilent/vivado-boards.git
+	branch = master
